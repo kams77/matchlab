@@ -39,7 +39,7 @@ jobs:
       - name: Publier la version
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.${{ github.run_number }}
-          name: Matchlab 1.0.${{ github.run_number }}
+          tag_name: v1.1.${{ github.run_number }}
+          name: Matchlab 1.1.${{ github.run_number }}
           body: "Téléchargez Matchlab.apk ci-dessous et installez-le sur votre téléphone."
           files: Matchlab.apk

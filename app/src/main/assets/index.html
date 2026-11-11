@@ -183,17 +183,25 @@ td.line{font-family:var(--f-num);white-space:nowrap}
 .cat a.dl.have{background:var(--pitch-soft);border-color:transparent;color:var(--pitch)}
 .auto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px 12px}
 @media (min-width:881px){.fx-list{max-height:62vh;overflow-y:auto}}
-.odds-in summary{cursor:pointer;font-size:12.5px;color:var(--pitch);font-weight:600}
-.odds-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
-.odds-grid input{padding:6px 4px;text-align:center}
-.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px}
-.combo{padding:12px 16px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;border-color:var(--pitch)}
-.combo .big{font-family:var(--f-num);font-size:20px}
-.combo input{width:110px}
-.pick-cb{width:18px;height:18px;accent-color:var(--pitch)}
-button.small{font-size:12px;padding:4px 9px}
-.st{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap}
-.st-w{background:var(--pitch-soft);color:var(--pitch)} .st-l{background:var(--red-soft);color:var(--red)} .st-p{background:var(--paper);color:var(--muted);border:1px solid var(--line)}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px 14px;margin-bottom:14px}
+.combo{padding:14px 16px;margin-bottom:12px;border-color:var(--pitch);box-shadow:inset 3px 0 0 var(--pitch)}
+.combo-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,280px);gap:16px}
+@media (max-width:700px){.combo-in{grid-template-columns:minmax(0,1fr)}}
+.combo-side{display:flex;flex-direction:column;gap:8px}
+.combo-p{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.combo-p b{font-size:22px;font-weight:500}
+.legs{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px;font-size:13px}
+.vrow2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:8px}
+.combo .vrow2{grid-template-columns:1fr 1fr}
+.bank-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.bank-row .fld{width:170px}
+.bet-act{display:flex;gap:4px;flex-wrap:wrap}
+.bet-act button{font-size:12px;padding:4px 8px}
+.learn{grid-column:1/-1}
+@media (min-width:900px){.learn{grid-column:span 2}}
+.calib svg.curve{max-width:none}
+.calib svg.curve text{font-size:13px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 code{font-family:var(--f-num);font-size:12px;background:var(--paper);padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
 .disclaimer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;margin-top:24px;max-width:90ch}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
@@ -210,8 +218,8 @@ code{font-family:var(--f-num);font-size:12px;background:var(--paper);padding:1px
     <nav class="tabs" aria-label="Sections">
       <a href="#analyse" data-v="analyse">Analyse</a>
       <a href="#selections" data-v="selections">Sélections fortes</a>
+      <a href="#paris" data-v="paris">Mes paris</a>
       <a href="#validation" data-v="validation">Validation du modèle</a>
-      <a href="#suivi" data-v="suivi">Suivi</a>
       <a href="#donnees" data-v="donnees">Données</a>
     </nav>
   </div>
@@ -229,16 +237,7 @@ code{font-family:var(--f-num);font-size:12px;background:var(--paper);padding:1px
           <div class="fld"><label for="b-ref">Arbitre</label><select id="b-ref"></select></div>
           <div class="fld"><label for="b-ctx">Contexte</label><select id="b-ctx"></select></div>
           <div class="fld"><label for="b-date">Date du match</label><input type="date" id="b-date"></div>
-          <details class="odds-in"><summary>Cotes du bookmaker (facultatif)</summary>
-            <p class="sub" style="margin:6px 0">Les cotes 1-N-2 et ±2,5 buts résument ce que le marché sait du match (forme, absences). Le modèle s’en sert pour affiner ses prévisions.</p>
-            <div class="odds-grid">
-              <div class="fld"><label for="b-o1">1</label><input type="number" inputmode="decimal" step="0.01" min="1.01" id="b-o1"></div>
-              <div class="fld"><label for="b-oN">N</label><input type="number" inputmode="decimal" step="0.01" min="1.01" id="b-oN"></div>
-              <div class="fld"><label for="b-o2">2</label><input type="number" inputmode="decimal" step="0.01" min="1.01" id="b-o2"></div>
-              <div class="fld"><label for="b-oo">+2,5</label><input type="number" inputmode="decimal" step="0.01" min="1.01" id="b-oo"></div>
-              <div class="fld"><label for="b-ou">−2,5</label><input type="number" inputmode="decimal" step="0.01" min="1.01" id="b-ou"></div>
-            </div>
-          </details>
+          <div class="fld"><label for="b-oo">Cotes Plus / Moins de 2,5 buts (facultatif)</label><div style="display:flex;gap:6px"><input type="number" id="b-oo" inputmode="decimal" step="0.01" min="1.01" placeholder="Plus"><input type="number" id="b-ou" inputmode="decimal" step="0.01" min="1.01" placeholder="Moins" aria-label="Cote Moins de 2,5 buts"></div></div>
           <button class="primary" type="button" id="b-add">Analyser ce match</button>
           <div class="sub" id="b-msg"></div>
         </div>
@@ -255,23 +254,24 @@ code{font-family:var(--f-num);font-size:12px;background:var(--paper);padding:1px
       <label for="thr">Seuil <input type="range" id="thr" min="60" max="90" step="1"><output id="thr-out"></output></label>
     </div>
     <div class="filters">
-      <div class="fld"><label for="f-period">Période</label><select id="f-period"><option value="1">Aujourd’hui et demain</option><option value="3">3 prochains jours</option><option value="7">7 prochains jours</option><option value="all">Toutes les rencontres</option></select></div>
-      <div class="fld"><label for="f-div">Championnat</label><select id="f-div"></select></div>
-      <div class="fld"><label for="f-mkt">Marché</label><select id="f-mkt"><option value="">Tous</option><option value="y">Cartons</option><option value="c">Corners</option><option value="g2">Buts 2ᵉ MT</option></select></div>
-      <div class="fld"><label for="f-conf">Confiance minimale</label><select id="f-conf"><option value="f">Toutes</option><option value="m">Moyenne ou élevée</option><option value="h">Élevée seulement</option></select></div>
+      <div class="fld"><label for="pf-div">Championnat</label><select id="pf-div"></select></div>
+      <div class="fld"><label for="pf-m">Marché</label><select id="pf-m"><option value="">Tous</option><option value="y">Cartons</option><option value="c">Corners</option><option value="g2">Buts 2ᵉ MT</option></select></div>
+      <div class="fld"><label for="pf-days">Période</label><select id="pf-days"><option value="3">3 prochains jours</option><option value="7">7 prochains jours</option><option value="0">Toutes les dates</option></select></div>
+      <div class="fld"><label for="pf-conf">Confiance minimale</label><select id="pf-conf"><option value="f">Toutes</option><option value="m">Moyenne ou élevée</option><option value="h">Élevée seulement</option></select></div>
     </div>
-    <div id="combo"></div>
+    <div class="card combo" id="combo" hidden></div>
+    <div class="sub" id="picks-msg" style="margin-bottom:8px"></div>
     <div class="card tbl-wrap" id="picks"></div>
+  </section>
+
+  <section class="view" id="v-paris" hidden>
+    <div class="bar-head"><div><h2 class="sec">Mes paris</h2><div class="sub">Suivi de vos mises. Chaque pari se règle automatiquement dès que le résultat du match entre dans la base.</div></div></div>
+    <div id="bets"></div>
   </section>
 
   <section class="view" id="v-validation" hidden>
     <div class="bar-head"><div><h2 class="sec">Validation du modèle</h2><div class="sub">Chaque match de la base est prédit avec les seules données disponibles avant son coup d’envoi, puis comparé au résultat réel.</div></div></div>
     <div id="validation"></div>
-  </section>
-
-  <section class="view" id="v-suivi" hidden>
-    <div class="bar-head"><div><h2 class="sec">Suivi de mes paris</h2><div class="sub">Les paris suivis sont réglés automatiquement dès que les résultats arrivent avec la mise à jour des données.</div></div></div>
-    <div id="suivi"></div>
   </section>
 
   <section class="view" id="v-donnees" hidden>
@@ -303,7 +303,6 @@ code{font-family:var(--f-num);font-size:12px;background:var(--paper);padding:1px
             <div class="fld"><label for="s-hl">Poids des matchs anciens (demi-vie)</label><select id="s-hl"><option value="90">90 jours</option><option value="180">180 jours</option><option value="365">1 an</option><option value="9999">Aucune décroissance</option></select></div>
             <div class="fld"><label for="s-k">Régression vers la moyenne</label><select id="s-k"><option value="3">Faible (3 matchs)</option><option value="6">Moyenne (6 matchs)</option><option value="10">Forte (10 matchs)</option><option value="15">Très forte (15 matchs)</option></select></div>
             <div class="fld"><label for="s-kr">Prudence sur l’arbitre</label><select id="s-kr"><option value="4">Faible</option><option value="8">Moyenne</option><option value="15">Forte</option></select></div>
-            <div class="fld"><label for="s-mkt">Utiliser les cotes du marché</label><select id="s-mkt"><option value="1">Oui (recommandé)</option><option value="0">Non</option></select></div>
             <div class="fld"><label for="s-n">Simulations Monte Carlo</label><select id="s-n"><option value="10000">10 000</option><option value="20000">20 000</option><option value="50000">50 000</option></select></div>
           </div>
         </div>
@@ -357,18 +356,6 @@ function nbmv(m,v,kmax){m=Math.max(m,1e-6);if(!(v>m*1.0005))return poisArr(m,kma
 function over(d,L){let c=0;for(let k=0;k<=Math.floor(L)&&k<d.length;k++)c+=d[k];return Math.min(1,Math.max(0,1-c))}
 function cmp(d1,d2){let gt=0,eq=0;for(let i=0;i<d1.length;i++)for(let j=0;j<d2.length;j++){const p=d1[i]*d2[j];if(i>j)gt+=p;else if(i===j)eq+=p}return {gt,eq,lt:Math.max(0,1-gt-eq)}}
 
-/* ---------- Cotes du marché -> probabilités implicites (marge retirée) ---------- */
-function oddsIndex(head){const f=(...ns)=>{for(const n of ns){const i=head.indexOf(n);if(i>=0)return i}return -1};
-  return {h:f('AvgH','B365H','PSH','BbAvH','WHH'),d:f('AvgD','B365D','PSD','BbAvD','WHD'),a:f('AvgA','B365A','PSA','BbAvA','WHA'),
-    o:f('Avg>2.5','B365>2.5','P>2.5','BbAv>2.5'),u:f('Avg<2.5','B365<2.5','P<2.5','BbAv<2.5')}}
-function marketFeat(oh,od,oa,oo,ou){
-  let md=null,mo=null;
-  if(oh>1&&od>1&&oa>1){const s=1/oh+1/od+1/oa;md=Math.round(((1/oh)-(1/oa))/s*1000)/1000}
-  if(oo>1&&ou>1){mo=Math.round((1/oo)/((1/oo)+(1/ou))*1000)/1000}
-  return {md,mo};
-}
-function oddsFromFields(ix,g){const n=i=>i>=0?parseFloat(String(g[i]||'').replace(',','.')):NaN;return marketFeat(n(ix.h),n(ix.d),n(ix.a),n(ix.o),n(ix.u))}
-
 /* ---------- Import CSV (format football-data.co.uk) ---------- */
 function parseDate(s){s=String(s||'').trim();let m=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})/);if(m){let y=+m[3];if(y<100)y+=2000;return Date.UTC(y,+m[2]-1,+m[1])}m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return Date.UTC(+m[1],+m[2]-1,+m[3]);return NaN}
 function parseCSV(text,fallbackDiv){
@@ -377,30 +364,20 @@ function parseCSV(text,fallbackDiv){
   const c1=(lines[0].match(/,/g)||[]).length,c2=(lines[0].match(/;/g)||[]).length,D=c2>c1?';':',';
   const split=l=>{const o=[];let cur='',q=false;for(let i=0;i<l.length;i++){const ch=l[i];if(ch==='"')q=!q;else if(ch===D&&!q){o.push(cur);cur=''}else cur+=ch}o.push(cur);return o.map(x=>x.trim())};
   const head=split(lines[0]);const find=(...ns)=>{for(const n of ns){const i=head.indexOf(n);if(i>=0)return i}return -1};
-  const ix={div:find('Div'),date:find('Date'),h:find('HomeTeam','Home'),a:find('AwayTeam','Away'),fh:find('FTHG','HG'),fa:find('FTAG','AG'),hh:find('HTHG'),ha:find('HTAG'),hc:find('HC'),ac:find('AC'),hy:find('HY'),ay:find('AY'),hr:find('HR'),ar:find('AR'),ref:find('Referee')};
+  const ix={div:find('Div'),date:find('Date'),h:find('HomeTeam','Home'),a:find('AwayTeam','Away'),fh:find('FTHG','HG'),fa:find('FTAG','AG'),hh:find('HTHG'),ha:find('HTAG'),hc:find('HC'),ac:find('AC'),hy:find('HY'),ay:find('AY'),hr:find('HR'),ar:find('AR'),ref:find('Referee'),hf:find('HF'),af:find('AF'),oo:find('Avg>2.5','BbAv>2.5','B365>2.5','P>2.5','Max>2.5'),ou:find('Avg<2.5','BbAv<2.5','B365<2.5','P<2.5','Max<2.5')};
   const need={date:'Date',h:'HomeTeam',a:'AwayTeam',fh:'FTHG',fa:'FTAG',hh:'HTHG',ha:'HTAG',hc:'HC',ac:'AC',hy:'HY',ay:'AY'};
   const miss=Object.keys(need).filter(k=>ix[k]<0).map(k=>need[k]);
   if(miss.length)return {rows:[],skipped:0,error:'Colonnes manquantes : '+miss.join(', ')+'.'};
-  const rows=[];let skipped=0;const oix=oddsIndex(head);
+  const rows=[];let skipped=0;
   for(let i=1;i<lines.length;i++){
     const f=split(lines[i]);const g=k=>ix[k]>=0?(f[ix[k]]||''):'';const n=k=>{const v=g(k);return v===''?NaN:+v};
     const t=parseDate(g('date')),fh=n('fh'),fa=n('fa'),hh=n('hh'),ha=n('ha'),hc=n('hc'),ac=n('ac'),hy=n('hy'),ay=n('ay');
     const hr=ix.hr>=0?(n('hr')||0):0,ar=ix.ar>=0?(n('ar')||0):0;
+    const fl=k=>{const v=n(k);return isFinite(v)&&v>=0?v:null},od=k=>{const v=n(k);return isFinite(v)&&v>1?v:null};
     if(!g('h')||!g('a')||[t,fh,fa,hh,ha,hc,ac,hy,ay].some(x=>!isFinite(x))||fh<hh||fa<ha){skipped++;continue}
-    rows.push({div:(g('div')||fallbackDiv||'LIGUE').trim(),t,h:g('h'),a:g('a'),hg1:hh,ag1:ha,hg2:fh-hh,ag2:fa-ha,hc,ac,hy:hy+hr,ay:ay+ar,ref:g('ref').trim(),...oddsFromFields(oix,f)});
+    rows.push({div:(g('div')||fallbackDiv||'LIGUE').trim(),t,h:g('h'),a:g('a'),hg1:hh,ag1:ha,hg2:fh-hh,ag2:fa-ha,hc,ac,hy:hy+hr,ay:ay+ar,ref:g('ref').trim(),hf:fl('hf'),af:fl('af'),oo:od('oo'),ou:od('ou')});
   }
   return {rows,skipped,error:rows.length?null:'Aucune ligne exploitable : résultats ou statistiques vides.'};
-}
-
-function parseFixtures(text){
-  const lines=String(text).replace(/^\uFEFF/,'').split(/\r?\n/).filter(l=>l.trim());if(lines.length<2)return [];
-  const sp=l=>{const o=[];let c='',q=false;for(const ch of l){if(ch==='"')q=!q;else if(ch===','&&!q){o.push(c);c=''}else c+=ch}o.push(c);return o.map(x=>x.trim())};
-  const h=sp(lines[0]),ix=n=>h.indexOf(n),iD=ix('Div'),iDt=ix('Date'),iT=ix('Time'),iH=ix('HomeTeam'),iA=ix('AwayTeam'),iR=ix('Referee'),oix=oddsIndex(h);
-  if(iD<0||iDt<0||iH<0||iA<0)return [];
-  const out=[];
-  for(let i=1;i<lines.length;i++){const f=sp(lines[i]),t=parseDate(f[iDt]);if(!isFinite(t)||!f[iH]||!f[iA])continue;
-    out.push({div:f[iD],t,time:iT>=0?f[iT]:'',h:f[iH],a:f[iA],ref:iR>=0?(f[iR]||''):'',...oddsFromFields(oix,f)})}
-  return out;
 }
 
 /* ---------- Saison simulée de démonstration ---------- */
@@ -409,7 +386,7 @@ function demoRows(){
   if(DEMO)return DEMO;
   const R=makeRng(20250816);
   const names=['Lions FC','Aigles SC','Atlético Riverside','Union Portuaire','FC Montagne','Racing Delta','Sporting Lagune','Olympique Savane','AS Fleuve','Étoile du Nord','Dynamo Plateau','CS Baobab','Real Cascade','Inter Volcan','US Marée','AC Horizon','Tonnerre FC','Vita Côte','Renaissance SC','Daring Colline'];
-  const T=names.map(n=>{const att=Math.exp(R.norm()*.2),def=Math.exp(R.norm()*.18);return {n,att,def,cat:Math.exp(Math.log(att)*.7+R.norm()*.12),cdef:Math.exp(Math.log(def)*.6+R.norm()*.12),yt:Math.exp(R.norm()*.2),yp:Math.exp(R.norm()*.12),s2:.5+R.u()*.13}});
+  const T=names.map(n=>{const att=Math.exp(R.norm()*.2),def=Math.exp(R.norm()*.18);return {n,att,def,cat:Math.exp(Math.log(att)*.7+R.norm()*.12),cdef:Math.exp(Math.log(def)*.6+R.norm()*.12),yt:Math.exp(R.norm()*.2),yp:Math.exp(R.norm()*.12),s2:.5+R.u()*.13,fp:Math.exp(R.norm()*.08)}});
   const refs=Array.from({length:12},(_,i)=>({n:'Arbitre '+String(i+1).padStart(2,'0'),s:Math.exp(R.norm()*.18)}));
   const N=20;let arr=[...Array(N).keys()];const rounds=[];
   for(let r=0;r<N-1;r++){const pr=[];for(let i=0;i<N/2;i++){const a=arr[i],b=arr[N-1-i];pr.push(r%2?[b,a]:[a,b])}rounds.push(pr);arr=[arr[0],arr[N-1],...arr.slice(1,N-1)]}
@@ -419,28 +396,33 @@ function demoRows(){
     pairs.forEach(([hi,ai],j)=>{const H=T[hi],A=T[ai],rf=refs[Math.floor(R.u()*refs.length)];
       const lh=1.48*H.att*A.def,la=1.12*A.att*H.def;
       const G=R.gamma(1/.08)*.08,Gy=R.gamma(1/.07)*.07;
+      const fh=11.2*Math.pow(H.yt,.8)*A.fp*Math.exp(R.norm()*.12),fa=12.1*Math.pow(A.yt,.8)*H.fp*Math.exp(R.norm()*.12);
+      const lm=(lh+la)*Math.exp(R.norm()*.06),po=1-Math.exp(-lm)*(1+lm+lm*lm/2);
       rows.push({div:'DEMO',t:base+(j%3===0?864e5:0),h:H.n,a:A.n,hg1:R.pois(lh*(1-H.s2)),ag1:R.pois(la*(1-A.s2)),hg2:R.pois(lh*H.s2),ag2:R.pois(la*A.s2),
-        hc:R.pois(5.6*H.cat*A.cdef*G),ac:R.pois(4.5*A.cat*H.cdef*G),hy:R.pois(1.85*H.yt*A.yp*rf.s*Gy),ay:R.pois(2.15*A.yt*H.yp*rf.s*Gy),ref:rf.n})})});
+        hc:R.pois(5.6*H.cat*A.cdef*G),ac:R.pois(4.5*A.cat*H.cdef*G),hy:R.pois(1.85*fh/11.2*Math.pow(H.yt,.25)*A.yp*rf.s*Gy),ay:R.pois(2.15*fa/12.1*Math.pow(A.yt,.25)*H.yp*rf.s*Gy),ref:rf.n,
+        hf:R.pois(fh),af:R.pois(fa),oo:+(1/(po*1.05)).toFixed(2),ou:+(1/((1-po)*1.05)).toFixed(2)})})});
   rows.sort((x,y)=>x.t-y.t);DEMO=rows;return rows;
 }
 
 /* ---------- Ajustement du modèle (attaque/défense bayésien, pondéré dans le temps) ---------- */
+function okm(r,m){return m!=='f'||(r.hf!=null&&r.af!=null)}
 function weight(cfg,refTs,t){return cfg.hl>=9999?1:Math.pow(.5,(refTs-t)/(cfg.hl*864e5))}
 function fit(rows,refTs,cfg){
   const P=[];for(const r of rows){if(r.t<refTs)P.push(r);else break}
   if(P.length<20)return null;
-  const W=P.map(r=>weight(cfg,refTs,r.t));let sw=0;W.forEach(w=>sw+=w);
+  const W=P.map(r=>weight(cfg,refTs,r.t));
+  const nF=P.filter(r=>okm(r,'f')).length,hasF=nF>=Math.max(40,.5*P.length),METS=hasF?MET.concat('f'):MET;
   const mu={H:{},A:{}};
-  for(const m of MET){let a=0,b=0;P.forEach((r,i)=>{a+=W[i]*r['h'+m];b+=W[i]*r['a'+m]});mu.H[m]=Math.max(a/sw,.03);mu.A[m]=Math.max(b/sw,.03)}
+  for(const m of METS){let a=0,b=0,sw=0;P.forEach((r,i)=>{if(!okm(r,m))return;a+=W[i]*r['h'+m];b+=W[i]*r['a'+m];sw+=W[i]});mu.H[m]=Math.max(a/sw,.03);mu.A[m]=Math.max(b/sw,.03)}
   const teams={};
   P.forEach((r,i)=>{for(const n of [r.h,r.a]){const t=teams[n]||(teams[n]={n:0,w:0,att:{},def:{},aA:{},aD:{}});t.n++;t.w+=W[i]}});
   const names=Object.keys(teams),prior={};
-  for(const m of MET){
+  for(const m of METS){
     const p0=cfg.k*(mu.H[m]+mu.A[m])/2;prior[m]=p0;
     names.forEach(n=>{teams[n].att[m]=1;teams[n].def[m]=1});
     for(let it=0;it<4;it++){
       const S={},E={},SD={},ED={};names.forEach(n=>{S[n]=0;E[n]=0;SD[n]=0;ED[n]=0});
-      P.forEach((r,i)=>{const w=W[i],th=teams[r.h],ta=teams[r.a],xh=r['h'+m],xa=r['a'+m];
+      P.forEach((r,i)=>{if(!okm(r,m))return;const w=W[i],th=teams[r.h],ta=teams[r.a],xh=r['h'+m],xa=r['a'+m];
         S[r.h]+=w*xh;E[r.h]+=w*mu.H[m]*ta.def[m];S[r.a]+=w*xa;E[r.a]+=w*mu.A[m]*th.def[m];
         SD[r.h]+=w*xa;ED[r.h]+=w*mu.A[m]*ta.att[m];SD[r.a]+=w*xh;ED[r.a]+=w*mu.H[m]*th.att[m]});
       let ma=0,md=0;
@@ -452,54 +434,73 @@ function fit(rows,refTs,cfg){
   P.forEach((r,i)=>{if(!r.ref)return;const th=teams[r.h],ta=teams[r.a];const e=mu.H.y*th.att.y*ta.def.y+mu.A.y*ta.att.y*th.def.y;
     const o=ref[r.ref]||(ref[r.ref]={n:0,raw:0,S:0,E:0});o.n++;o.raw+=r.hy+r.ay;o.S+=W[i]*(r.hy+r.ay);o.E+=W[i]*e});
   for(const n in ref){const o=ref[n];o.a=pr+o.S;o.mul=(pr+o.S)/(pr+o.E);o.avg=o.raw/o.n}
-  /* Régression de Poisson bayésienne : ce que les cotes disent du match (écart de force, match ouvert)
-     corrige la note des équipes. Priorité forte vers 0 : sans signal net, aucune correction. */
-  const mk={};
-  for(const m of MET){mk[m]={h:[0,0,0],a:[0,0,0],n:0};}
-  const Q=[];P.forEach((r,i)=>{if(cfg.mkt!==false&&r.md!=null&&r.mo!=null)Q.push(i)});
-  if(Q.length>=80){
-    for(const m of MET)for(const side of ['h','a']){
-      let b=[0,0,0];const tau=[1,4,4];
-      for(let it=0;it<8;it++){
-        const g=[0,0,0],H=[[0,0,0],[0,0,0],[0,0,0]];
-        for(const i of Q){const r=P[i],w=W[i],th=teams[r.h],ta=teams[r.a];
-          const l0=side==='h'?mu.H[m]*th.att[m]*ta.def[m]:mu.A[m]*ta.att[m]*th.def[m];
-          const z=[1,side==='h'?r.md:-r.md,r.mo-.5],e=b[0]*z[0]+b[1]*z[1]+b[2]*z[2],muh=l0*Math.exp(e),x=r[side+m];
-          for(let j=0;j<3;j++){g[j]+=w*(x-muh)*z[j];for(let k=0;k<3;k++)H[j][k]+=w*muh*z[j]*z[k]}}
-        for(let j=0;j<3;j++){g[j]-=tau[j]*b[j];H[j][j]+=tau[j]}
-        const dlt=solve3(H,g);if(!dlt)break;b=b.map((v,j)=>Math.max(-2,Math.min(2,v+dlt[j])));
-        if(Math.abs(dlt[0])+Math.abs(dlt[1])+Math.abs(dlt[2])<1e-6)break;
-      }
-      mk[m][side]=b;
-    }
-    for(const m of MET)mk[m].n=Q.length;
-  }
-  const mkMul=(m,side,r)=>{if(r.md==null||r.mo==null||!mk[m].n)return 1;const b=mk[m][side];return Math.exp(b[0]+b[1]*(side==='h'?r.md:-r.md)+b[2]*(r.mo-.5))};
-
   const disp={};
   for(const m of MET){let num=0,den=0;
     P.forEach((r,i)=>{const th=teams[r.h],ta=teams[r.a];let l=mu.H[m]*th.att[m]*ta.def[m]+mu.A[m]*ta.att[m]*th.def[m];
-      l=mu.H[m]*th.att[m]*ta.def[m]*mkMul(m,'h',r)+mu.A[m]*ta.att[m]*th.def[m]*mkMul(m,'a',r);
       if(m==='y'&&r.ref&&ref[r.ref])l*=ref[r.ref].mul;const x=r['h'+m]+r['a'+m];num+=W[i]*((x-l)*(x-l)-l);den+=W[i]*l*l});
     disp[m]=Math.min(.35,Math.max(0,den>0?num/den:0))}
-  return {mu,teams,ref,disp,prior,mk,mkMul,n:P.length,nOdds:Q.length,first:P[0].t,last:P[P.length-1].t,refTs};
+  return {mu,teams,ref,disp,prior,hasF,n:P.length,first:P[0].t,last:P[P.length-1].t,refTs};
 }
-function solve3(A,b){const M=A.map((r,i)=>r.concat([b[i]]));
-  for(let c=0;c<3;c++){let p=c;for(let r=c+1;r<3;r++)if(Math.abs(M[r][c])>Math.abs(M[p][c]))p=r;if(Math.abs(M[p][c])<1e-12)return null;[M[c],M[p]]=[M[p],M[c]];
-    for(let r=0;r<3;r++){if(r===c)continue;const f=M[r][c]/M[c][c];for(let k=c;k<4;k++)M[r][k]-=f*M[c][k]}}
-  return [M[0][3]/M[0][0],M[1][3]/M[1][1],M[2][3]/M[2][2]]}
 function teamP(F,name,m){const t=F.teams[name];if(!t)return {att:1,def:1,aA:F.prior[m],aD:F.prior[m],n:0};return {att:t.att[m],def:t.def[m],aA:t.aA[m],aD:t.aD[m],n:t.n}}
 
-function predict(F,h,a,refName,ctxF,odds){
-  const out={},rf=(refName&&F.ref[refName])||null,ob=odds&&odds.md!=null&&odds.mo!=null?odds:null;
-  for(const m of MET){
-    const H=teamP(F,h,m),A=teamP(F,a,m);let lh=F.mu.H[m]*H.att*A.def,la=F.mu.A[m]*A.att*H.def,cr=0;
-    if(ob){lh*=F.mkMul(m,'h',ob);la*=F.mkMul(m,'a',ob)}
-    if(m==='y'){const mul=(rf?rf.mul:1)*(ctxF||1);lh*=mul;la*=mul;cr=rf?1/rf.a:0}
-    const c=F.disp[m],ch=1/H.aA+1/A.aD,ca=1/A.aA+1/H.aD,lt=lh+la;
-    out[m]={lh,la,lt,vh:lh+(c+ch+cr)*lh*lh,va:la+(c+ca+cr)*la*la,vt:lt+(c+cr)*lt*lt+ch*lh*lh+ca*la*la};
-  }
-  out.mkt=!!(ob&&F.nOdds>=80);out.nh=(F.teams[h]||{n:0}).n;out.na=(F.teams[a]||{n:0}).n;out.ref=rf;
+/* Total de buts implicite des cotes Plus/Moins de 2,5 (marge retirée, loi de Poisson) */
+function mktLambda(oo,ou){if(!(oo>1&&ou>1))return null;const p=(1/oo)/((1/oo)+(1/ou));let lo=.2,hi=8;
+  for(let i=0;i<40;i++){const l=(lo+hi)/2,q=1-Math.exp(-l)*(1+l+l*l/2);if(q<p)lo=l;else hi=l}return (lo+hi)/2}
+function predictRaw(F,h,a,refName,ctxF,mkt){
+  const R={},rf=(refName&&F.ref[refName])||null;
+  for(const m of MET){const H=teamP(F,h,m),A=teamP(F,a,m);
+    R[m]={lh:F.mu.H[m]*H.att*A.def,la:F.mu.A[m]*A.att*H.def,ch:1/H.aA+1/A.aD,ca:1/A.aA+1/H.aD,c:F.disp[m],cr:0,mul:1}}
+  R.y.mul=(rf?rf.mul:1)*(ctxF||1);R.y.cr=rf?1/rf.a:0;
+  R.yf=null;if(F.hasF&&F.teams[h]&&F.teams[a]){const H=teamP(F,h,'f'),A=teamP(F,a,'f');R.yf=[F.mu.H.y*H.att*A.def,F.mu.A.y*A.att*H.def]}
+  R.mkt=mkt>0?mkt:null;R.nh=(F.teams[h]||{n:0}).n;R.na=(F.teams[a]||{n:0}).n;R.ref=rf;
+  return R;
+}
+function assemble(R,w){
+  w=w||{};const wf=R.yf?(w.f||0):0,wm=R.mkt?(w.m||0):0,out={},T=R.g1.lh+R.g1.la+R.g2.lh+R.g2.la;
+  const s=wm>0?Math.exp(wm*(Math.log(R.mkt)-Math.log(T))):1;
+  for(const m of MET){const r=R[m];let lh=r.lh,la=r.la,ch=r.ch,ca=r.ca;
+    if(m==='y'&&wf>0){lh=Math.pow(lh,1-wf)*Math.pow(R.yf[0],wf);la=Math.pow(la,1-wf)*Math.pow(R.yf[1],wf)}
+    if(m==='g1'||m==='g2'){lh*=s;la*=s;ch*=(1-wm);ca*=(1-wm)}
+    lh*=r.mul;la*=r.mul;const c=r.c,cr=r.cr,lt=lh+la;
+    out[m]={lh,la,lt,vh:lh+(c+ch+cr)*lh*lh,va:la+(c+ca+cr)*la*la,vt:lt+(c+cr)*lt*lt+ch*lh*lh+ca*la*la}}
+  out.nh=R.nh;out.na=R.na;out.ref=R.ref;out.mkt=R.mkt;out.modelGoals=T;out.wf=wf;out.wm=wm;
+  return out;
+}
+function predict(F,h,a,refName,ctxF,opt){opt=opt||{};return assemble(predictRaw(F,h,a,refName,ctxF,opt.mkt),opt.w)}
+
+/* Poids du marché et des fautes appris sur l'historique (déviance de Poisson minimale) */
+function learnW(S){
+  const grid=[0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1],dev=(l,x)=>l-x*Math.log(Math.max(l,1e-9));
+  const SM=S.filter(x=>x.R.mkt),SF=S.filter(x=>x.R.yf);
+  const best=(arr,fn)=>{let bw=0,bv=Infinity,v0=0;grid.forEach(g=>{let v=0;arr.forEach(x=>v+=fn(x,g));if(g===0)v0=v;if(v<bv-1e-9){bv=v;bw=g}});return {w:bw,gain:arr.length?(v0-bv)/arr.length:0}};
+  const gm=SM.length>=60?best(SM,(x,g)=>{const T=x.R.g1.lh+x.R.g1.la+x.R.g2.lh+x.R.g2.la;return dev(T*Math.exp(g*(Math.log(x.R.mkt)-Math.log(T))),x.gT)}):{w:0,gain:0};
+  const gf=SF.length>=60?best(SF,(x,g)=>{const r=x.R.y;return dev((Math.pow(r.lh,1-g)*Math.pow(x.R.yf[0],g)+Math.pow(r.la,1-g)*Math.pow(x.R.yf[1],g))*r.mul,x.yT)}):{w:0,gain:0};
+  return {m:gm.w,f:gf.w,nm:SM.length,nf:SF.length,gm:gm.gain,gf:gf.gain};
+}
+
+/* Calibration isotonique (regroupement par intervalles + PAV), une courbe par marché */
+function fitCal(pairs){
+  if(pairs.length<300)return null;const B=20,bins=Array.from({length:B},()=>({n:0,p:0,o:0}));
+  pairs.forEach(([p,o])=>{const b=bins[Math.min(B-1,Math.floor(p*B))];b.n++;b.p+=p;b.o+=o});
+  const st=[];bins.filter(b=>b.n>0).forEach(b=>{const x=b.p/b.n,y=(b.o+3*x)/(b.n+3);st.push({n:b.n,x:x*b.n,y:y*b.n});
+    while(st.length>1&&st[st.length-2].y/st[st.length-2].n>st[st.length-1].y/st[st.length-1].n){const t=st.pop(),u=st.pop();st.push({n:u.n+t.n,x:u.x+t.x,y:u.y+t.y})}});
+  return st.length>=2?st.map(b=>[b.x/b.n,b.y/b.n]):null;
+}
+function applyCal(K,p){
+  if(!K)return p;let r;const f=K[0],l=K[K.length-1];
+  if(p<=f[0])r=f[0]>0?p*f[1]/f[0]:f[1];else if(p>=l[0])r=l[0]<1?1-(1-p)*(1-l[1])/(1-l[0]):l[1];
+  else{let i=1;while(K[i][0]<p)i++;const a=K[i-1],b=K[i];r=a[1]+(b[1]-a[1])*(p-a[0])/(b[0]-a[0])}
+  return Math.min(.995,Math.max(.005,r));
+}
+function calibrate(M,cal){
+  if(!cal)return M;
+  for(const m of ['y','c','g2']){const K=cal[m];if(!K)continue;const g=M.groups[m];g.forEach(o=>o.raw=o.p);
+    g.forEach(o=>{o.p=o.side==='u'?1-applyCal(K,M.byKey[m+'|o|'+o.line].raw):applyCal(K,o.raw)})}
+  return M;
+}
+function calibrateArr(P,cal){
+  if(!cal)return P;const out=P.slice();
+  KMETA.forEach((k,j)=>{const K=cal[k.m];if(!K)return;out[j]=k.side==='u'?1-applyCal(K,P[KIDX[k.m+'|o|'+k.line]]):applyCal(K,P[j])});
   return out;
 }
 
@@ -545,6 +546,7 @@ function outcome(k,r){
 const dummy={};for(const m of MET)dummy[m]={lh:1,la:1,lt:2,vh:1.2,va:1.2,vt:2.4};
 const KEYS=Object.keys(markets(dummy).byKey);
 const KMETA=KEYS.map(k=>{const o=markets(dummy).byKey[k];return {k,m:o.m,side:o.side,line:o.line,extra:!!o.extra}});
+const KIDX={};KEYS.forEach((k,j)=>KIDX[k]=j);
 
 /* La ligne la plus ambitieuse au-dessus du seuil, par marché et par sens, plus les marchés spéciaux */
 function selectPicks(probs,thr){
@@ -582,7 +584,7 @@ function profile(rows,refTs,team,cfg){
   if(!n)return null;for(const k in s)s[k]/=w;s.n=n;s.share=(s.g1+s.g2)>0?s.g2/(s.g1+s.g2):null;s.last=last.slice(-6);return s;
 }
 
-return {parseFixtures,marketFeat,MET,DIVN,LINES,KEYS,KMETA,fr,parseCSV,parseDate,demoRows,fit,predict,markets,outcome,selectPicks,simulate,profile,nbmv,makeRng};
+return {MET,DIVN,LINES,KEYS,KMETA,KIDX,fr,parseCSV,parseDate,demoRows,fit,predict,predictRaw,assemble,mktLambda,learnW,fitCal,applyCal,calibrate,calibrateArr,markets,outcome,selectPicks,simulate,profile,nbmv,makeRng};
 })();
 </script>
 <script>
@@ -597,25 +599,23 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 const pct=p=>p==null?'—':(p*100).toLocaleString('fr-FR',{maximumFractionDigits:0})+' %';
 const odd=p=>p>0.001?(1/p).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
 const today=()=>new Date().toISOString().slice(0,10);
-const NATIVE=window.MatchlabNative||null;
-function storeGet(){try{if(NATIVE&&NATIVE.loadData){const t=NATIVE.loadData(KEY);if(t)return JSON.parse(t)}}catch(e){}try{return JSON.parse(localStorage.getItem(KEY))}catch(e){return null}}
-function storeSet(txt){if(NATIVE&&NATIVE.saveData){try{if(NATIVE.saveData(KEY,txt)==='ok')return true}catch(e){}}localStorage.setItem(KEY,txt);return true}
 const dstr=t=>new Date(t).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'});
 
 /* ---------- État ---------- */
-let state=(()=>{let s=storeGet();if(!s||typeof s!=='object')s={};
+let state=(()=>{let s=null;try{s=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!s||typeof s!=='object')s={};
   s.ds=Array.isArray(s.ds)?s.ds:[];if(s.demo===undefined)s.demo=true;s.fx=Array.isArray(s.fx)?s.fx:[];
-  s.cfg=Object.assign({hl:180,k:6,kr:8,N:20000,mkt:true},s.cfg||{});s.track=Array.isArray(s.track)?s.track:[];s.combo=Array.isArray(s.combo)?s.combo:[];
-  s.sel=Object.assign({period:'7',div:'',m:'',conf:'f'},s.sel||{});s.thr=s.thr||72;s.odds=s.odds||{};s.calib=s.calib||'y';
-  s.auto=Object.assign({divs:['E0','F1','SP1','I1','D1','N1','P1','B1'],last:0},s.auto||{});return s})();
+  s.cfg=Object.assign({hl:180,k:6,kr:8,N:20000},s.cfg||{});s.thr=s.thr||72;s.odds=s.odds||{};s.calib=s.calib||'y';
+  s.auto=Object.assign({divs:['E0','F1','SP1','I1','D1','N1','P1','B1'],last:0},s.auto||{});
+  s.bets=Array.isArray(s.bets)?s.bets:[];s.bank=s.bank||100;s.money=s.money||'$';s.pf=Object.assign({div:'',m:'',days:'7',conf:'f'},s.pf||{});return s})();
+const COMBO=new Map();
 let saveFailed=false;
-function save(){try{storeSet(JSON.stringify(state));saveFailed=false}catch(e){saveFailed=true}}
-const pack=r=>[r.div,r.t,r.h,r.a,r.hg1,r.ag1,r.hg2,r.ag2,r.hc,r.ac,r.hy,r.ay,r.ref||'',r.md==null?null:r.md,r.mo==null?null:r.mo];
-const unpack=a=>({div:a[0],t:a[1],h:a[2],a:a[3],hg1:a[4],ag1:a[5],hg2:a[6],ag2:a[7],hc:a[8],ac:a[9],hy:a[10],ay:a[11],ref:a[12],md:a[13]==null?null:a[13],mo:a[14]==null?null:a[14]});
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));saveFailed=false}catch(e){saveFailed=true}}
+const pack=r=>[r.div,r.t,r.h,r.a,r.hg1,r.ag1,r.hg2,r.ag2,r.hc,r.ac,r.hy,r.ay,r.ref||'',r.hf,r.af,r.oo,r.ou];
+const unpack=a=>({div:a[0],t:a[1],h:a[2],a:a[3],hg1:a[4],ag1:a[5],hg2:a[6],ag2:a[7],hc:a[8],ac:a[9],hy:a[10],ay:a[11],ref:a[12],hf:a[13]==null?null:a[13],af:a[14]==null?null:a[14],oo:a[15]||null,ou:a[16]||null});
 
 let DATA={},FITC=new Map(),MCC=new Map(),BT=null,btJob=0;
 const divName=d=>E.DIVN[d]||d;
-const cfgKey=()=>[state.cfg.hl,state.cfg.k,state.cfg.kr,state.cfg.mkt].join(',');
+const cfgKey=()=>[state.cfg.hl,state.cfg.k,state.cfg.kr].join(',');
 function rebuild(){
   DATA={};const seen=new Set();
   const add=r=>{const k=r.div+'|'+r.t+'|'+r.h+'|'+r.a;if(seen.has(k))return;seen.add(k);(DATA[r.div]=DATA[r.div]||[]).push(r)};
@@ -628,27 +628,40 @@ function rebuild(){
       .forEach(([h,a,ref,ctx],i)=>state.fx.push({id:'ex'+i,div:'DEMO',h,a,ref,ctx,date:today()}));
     state.cur='ex0';save();
   }
-  settle();
-  startBacktest();
+  settleBets();startBacktest();
 }
 function getFit(div,ts){const k=div+'|'+ts+'|'+cfgKey();if(!FITC.has(k))FITC.set(k,DATA[div]?E.fit(DATA[div],ts,state.cfg):null);return FITC.get(k)}
 const fxTs=fx=>{const t=E.parseDate(fx.date);return isFinite(t)?t:E.parseDate(today())};
 function analyzeFx(fx){if(!fx||!DATA[fx.div])return null;const F=getFit(fx.div,fxTs(fx));if(!F)return null;
-  const P=E.predict(F,fx.h,fx.a,fx.ref,(CTX[fx.ctx]||CTX.normal).f,state.cfg.mkt?{md:fx.md,mo:fx.mo}:null);return {F,P,M:E.markets(P,fx.h,fx.a)}}
+  const done=BT&&BT.status==='done';
+  const P=E.predict(F,fx.h,fx.a,fx.ref,(CTX[fx.ctx]||CTX.normal).f,{mkt:E.mktLambda(+fx.oo,+fx.ou),w:done?BT.W:null});
+  return {F,P,M:E.calibrate(E.markets(P,fx.h,fx.a),done?BT.cal:null)}}
 const curFx=()=>state.fx.find(f=>f.id===state.cur)||state.fx[0];
 
 /* ---------- Validation historique (walk-forward) ---------- */
 function startBacktest(){
-  const job=++btJob;BT={status:'run',prog:0,P:[],O:[],meta:[]};
+  const job=++btJob;BT={status:'run',prog:0,S:[],P:[],O:[]};
   const tasks=[];for(const div in DATA){const rows=DATA[div],from=rows[rows.length-1].t-400*864e5;const days=[...new Set(rows.filter(r=>r.t>=from).map(r=>r.t))];days.forEach(t=>tasks.push([div,t]))}
   let i=0;renderStatus();
   const step=()=>{if(job!==btJob)return;const end=Math.min(tasks.length,i+12);
     for(;i<end;i++){const [div,t]=tasks[i],rows=DATA[div],F=E.fit(rows,t,state.cfg);if(!F)continue;
       for(const r of rows){if(r.t<t)continue;if(r.t>t)break;const th=F.teams[r.h],ta=F.teams[r.a];if(!th||!ta||th.n<5||ta.n<5)continue;
-        const M=E.markets(E.predict(F,r.h,r.a,r.ref,1,state.cfg.mkt?r:null),r.h,r.a);BT.P.push(E.KEYS.map(k=>M.byKey[k].p));BT.O.push(E.KEYS.map(k=>E.outcome(k,r)));BT.meta.push(div)}}
+        BT.S.push({t:r.t,R:E.predictRaw(F,r.h,r.a,r.ref,1,E.mktLambda(r.oo,r.ou)),gT:r.hg1+r.hg2+r.ag1+r.ag2,yT:r.hy+r.ay,O:E.KEYS.map(k=>E.outcome(k,r))})}}
     BT.prog=tasks.length?i/tasks.length:1;renderStatus();
-    if(i<tasks.length)setTimeout(step,0);else{BT.status='done';renderStatus();renderView()}};
+    if(i<tasks.length)setTimeout(step,0);else{finishBacktest();renderStatus();renderView()}};
   setTimeout(step,20);
+}
+function finishBacktest(){
+  const S=BT.S,W=E.learnW(S),O=S.map(x=>x.O);
+  const raw=S.map(x=>{const M=E.markets(E.assemble(x.R,W));return E.KEYS.map(k=>M.byKey[k].p)});
+  const ord=S.map((_,i)=>i).sort((a,b)=>S[a].t-S[b].t),cut=Math.floor(ord.length*.7),tr=ord.slice(0,cut),te=ord.slice(cut);
+  const pairs=(idx,m)=>{const o=[];idx.forEach(i=>E.KMETA.forEach((k,j)=>{if(k.m===m)o.push([raw[i][j],O[i][j]])}));return o};
+  const brier=(get,idx,m)=>{let b=0,n=0;idx.forEach(i=>{const p=get(i);E.KMETA.forEach((k,j)=>{if(k.m===m){b+=(p[j]-O[i][j])**2;n++}})});return n?b/n:null};
+  const cal={},cs={};
+  ['y','c','g2'].forEach(m=>{const K=E.fitCal(pairs(tr,m));let b0=null,b1=null,used=false;
+    if(K&&te.length>=60){b0=brier(i=>raw[i],te,m);b1=brier(i=>E.calibrateArr(raw[i],{[m]:K}),te,m);used=b1<b0-2e-5}
+    cs[m]={b0,b1,used,n:te.length};if(used)cal[m]=E.fitCal(pairs(ord,m))});
+  BT.W=W;BT.cal=Object.keys(cal).length?cal:null;BT.cs=cs;BT.P=raw.map(p=>E.calibrateArr(p,BT.cal));BT.O=O;BT.n=S.length;BT.S=null;BT.status='done';MCC.clear();
 }
 function reliability(k,p){if(!BT||BT.status!=='done')return null;const j=E.KEYS.indexOf(k);if(j<0)return null;let n=0,h=0;
   for(let i=0;i<BT.P.length;i++){if(Math.abs(BT.P[i][j]-p)<=.06){n++;h+=BT.O[i][j]}}return {n,r:n?h/n:null}}
@@ -668,6 +681,7 @@ function renderStatus(){
   let bt='';
   if(BT&&BT.status==='run')bt=`<span>Validation <span class="prog"><i style="width:${(BT.prog*100).toFixed(0)}%"></i></span></span>`;
   else if(BT&&BT.status==='done')bt=`<span>Validé sur <b>${BT.P.length.toLocaleString('fr-FR')}</b> matchs</span>`;
+  const open=state.bets.filter(b=>b.st==='open').length;if(open)bt+=`<span><a href="#paris">${open} pari${open>1?'s':''} en cours</a></span>`;
   if(typeof updating!=='undefined'&&updating)bt=`<span><b>${esc(autoMsg||'Mise à jour…')}</b></span>`;
   $('status').innerHTML=n?`<span>Base : <b>${n.toLocaleString('fr-FR')}</b> matchs · <b>${ln}</b> championnat${ln>1?'s':''}${state.demo?' (dont démo simulée)':''}</span>${bt}`:'<span>Aucune donnée chargée</span>';
 }
@@ -714,10 +728,11 @@ function panel(m,A,fx,sim){
   const rows=E.LINES[m].map(L=>{const o=A.M.byKey[m+'|o|'+L],u=A.M.byKey[m+'|u|'+L];return `<tr><td class="line">${fr(L)}</td><td>${pcell(o.p,o.p>=thr)}</td><td>${pcell(u.p,u.p>=thr)}</td></tr>`}).join('');
   const extras=g.filter(o=>o.extra).map(o=>`<div class="extra"><span>${esc(o.label)}</span>${pcell(o.p,o.p>=thr)}</div>`).join('');
   let simTxt='Simulation en cours…';
-  if(sim){const gap=Math.max(...E.LINES[m].map(L=>Math.abs(sim[m].over[L]-A.M.byKey[m+'|o|'+L].p)));simTxt=`Fourchette à 90 % : ${sim[m].p5} à ${sim[m].p95} · écart calcul/simulation ${fr(gap*100)} pt`}
+  if(sim){const gap=Math.max(...E.LINES[m].map(L=>Math.abs(sim[m].over[L]-(A.M.byKey[m+'|o|'+L].raw??A.M.byKey[m+'|o|'+L].p))));simTxt=`Fourchette à 90 % : ${sim[m].p5} à ${sim[m].p95} · écart calcul/simulation ${fr(gap*100)} pt`}
   const sel=(state.odds[fx.id+'|'+m]||{});
-  let note='';if(m==='y')note=A.P.ref?`Arbitre : ${fr(A.P.ref.avg)} cartons/match sur ${A.P.ref.n} matchs, sévérité ×${fr(A.P.ref.mul,2)}`:'Arbitre inconnu : sévérité moyenne de la ligue';
-  if(m==='g2')note=`1ʳᵉ MT attendue : ${fr(A.P.g1.lt,2)} but(s)`;
+  let note='';if(m==='y')note=(A.P.ref?`Arbitre : ${fr(A.P.ref.avg)} cartons/match sur ${A.P.ref.n} matchs, sévérité ×${fr(A.P.ref.mul,2)}`:'Arbitre inconnu : sévérité moyenne de la ligue')+(A.P.wf>0?` · fautes commises intégrées à ${pct(A.P.wf)}`:'');
+  if(m==='g2')note=`1ʳᵉ MT attendue : ${fr(A.P.g1.lt,2)} but(s)`+(A.P.wm>0?` · cotes du marché intégrées à ${pct(A.P.wm)}`:'');
+  if(A.M.groups[m][0].raw!=null)note+=' · probabilités calibrées sur l’historique';
   return `<article class="panel p-${m}">
     <header><span class="${MK[m].cls}" aria-hidden="true">${MK[m].txt}</span><h3>${MK[m].t}</h3><span class="exp">Total attendu<b>${fr(A.P[m].lt,m==='g2'?2:1)}</b></span></header>
     <div class="verdict"><div><small>Ligne conseillée</small><span class="v-l">${esc(b.label)}</span><div class="v-h">${chip(confidence(b.p,rel,nmin))}<span>${relTxt(rel)}</span></div></div><span class="v-p">${pct(b.p)}</span></div>
@@ -729,14 +744,16 @@ function panel(m,A,fx,sim){
     <div class="value"><label class="group-label" for="v-${m}-sel">Comparer à la cote du bookmaker</label>
       <div class="vrow"><select id="v-${m}-sel" data-m="${m}">${g.map(o=>`<option value="${o.k}"${o.k===(sel.k||b.k)?' selected':''}>${esc(o.label)}</option>`).join('')}</select>
       <input id="v-${m}-odd" data-m="${m}" type="number" inputmode="decimal" min="1.01" step="0.01" placeholder="Cote" value="${esc(sel.o||'')}" aria-label="Cote du bookmaker"></div>
-      <div class="vres" id="v-${m}-res"></div></div>
+      <div class="vres" id="v-${m}-res"></div>
+      <div class="vrow2"><input id="v-${m}-stake" type="number" inputmode="decimal" min="0" step="0.5" placeholder="Mise" aria-label="Mise"><button type="button" id="v-${m}-add">Ajouter à mes paris</button></div>
+      <div class="sub" id="v-${m}-ok"></div></div>
   </article>`;
 }
 function valueRes(m,A,fx){
   const k=$(`v-${m}-sel`).value,c=parseFloat(String($(`v-${m}-odd`).value).replace(',','.')),o=A.M.byKey[k],out=$(`v-${m}-res`);
   if(!o)return;if(!(c>1)){out.innerHTML=`Probabilité ${pct(o.p)} · cote juste <b>${odd(o.p)}</b>. Entrez la cote proposée pour mesurer la value.`;return}
   const edge=o.p*c-1;let t=`Le bookmaker estime ${pct(1/c)}, le modèle ${pct(o.p)}. `;
-  if(edge>.03){const kel=Math.min(.05,edge/(c-1)/4);t+=`<b class="pos">Value +${fr(edge*100)} %</b> · mise ¼ Kelly : ${fr(kel*100)} % de la bankroll`}
+  if(edge>.03){const kel=Math.min(.05,edge/(c-1)/4);t+=`<b class="pos">Value +${fr(edge*100)} %</b> · mise ¼ Kelly : ${fr(kel*100)} % de la bankroll, soit ${money(kel*bankNow())}`;$(`v-${m}-stake`).placeholder='Mise conseillée '+fr(kel*bankNow(),2)}
   else if(edge>-.03)t+='<b>Cote proche du juste prix</b>';else t+=`<b class="neg">Pas de value (${fr(edge*100)} %)</b>`;
   out.innerHTML=t;
 }
@@ -747,20 +764,24 @@ function renderAnalysis(){
   const A=analyzeFx(fx);
   if(!A){box.innerHTML=`<div class="card empty">Pas assez de matchs dans la base avant le ${esc(fx.date)} pour « ${esc(divName(fx.div))} ». Importez une saison antérieure ou changez la date.</div>${actions()}`;bindActions(fx);return}
   const nmin=Math.min(A.P.nh,A.P.na),real=realResult(fx);
-  const mcKey=[fx.id,fx.h,fx.a,fx.ref,fx.ctx,fx.date,cfgKey(),state.cfg.N,state.demo,state.ds.length].join('|');
+  const mcKey=[fx.id,fx.h,fx.a,fx.ref,fx.ctx,fx.date,fx.oo,fx.ou,cfgKey(),state.cfg.N,state.demo,state.ds.length,BT&&BT.status].join('|');
   const sim=MCC.get(mcKey);
   box.innerHTML=`<div class="match-head">
     <div class="fixture"><div class="team"><small>DOMICILE · ${A.P.nh} MATCHS</small>${esc(fx.h)}</div>
       <div class="xg"><div class="score">${fr(A.P.g1.lh+A.P.g2.lh,2)} – ${fr(A.P.g1.la+A.P.g2.la,2)}</div><small>buts attendus</small></div>
       <div class="team away"><small>EXTÉRIEUR · ${A.P.na} MATCHS</small>${esc(fx.a)}</div></div>
-    <div class="meta"><span>${esc(divName(fx.div))}</span><span>${esc(fx.date)}</span><span>Contexte : <b>${(CTX[fx.ctx]||CTX.normal).l}</b></span><span>Base : <b>${A.F.n.toLocaleString('fr-FR')} matchs</b> du ${dstr(A.F.first)} au ${dstr(A.F.last)}</span><span>Simulations : <b>${state.cfg.N.toLocaleString('fr-FR')}</b></span><span>Cotes du marché : <b>${A.P.mkt?'intégrées':fx.md!=null?'base sans cotes':'non saisies'}</b></span></div>
+    ${A.P.mkt?`<div class="real">Marché (cotes +2,5 / −2,5 : ${fr(+fx.oo,2)} / ${fr(+fx.ou,2)}) : <b>${fr(A.P.mkt,2)} buts</b> attendus · modèle seul ${fr(A.P.modelGoals,2)} · ${A.P.wm>0?`synthèse retenue ${fr(A.P.g1.lt+A.P.g2.lt,2)} (poids du marché ${pct(A.P.wm)}, appris sur l’historique)`:'poids du marché en cours d’apprentissage'}</div>`:''}
+    <div class="meta"><span>${esc(divName(fx.div))}</span><span>${esc(fx.date)}</span><span>Contexte : <b>${(CTX[fx.ctx]||CTX.normal).l}</b></span><span>Base : <b>${A.F.n.toLocaleString('fr-FR')} matchs</b> du ${dstr(A.F.first)} au ${dstr(A.F.last)}</span><span>Simulations : <b>${state.cfg.N.toLocaleString('fr-FR')}</b></span></div>
     ${nmin<5?`<div class="warn">Une des équipes compte moins de 5 matchs dans la base : ses notes restent proches de la moyenne de la ligue.</div>`:''}
     ${real?`<div class="real"><b>Résultat réel</b> : ${real.hg1+real.hg2}-${real.ag1+real.ag2} (2ᵉ MT ${real.hg2}-${real.ag2}) · ${real.hc+real.ac} corners · ${real.hy+real.ay} cartons. Le modèle n’a utilisé que les matchs antérieurs.</div>`:''}
     ${actions()}</div>
     <div class="panels">${['y','c','g2'].map(m=>panel(m,A,fx,sim)).join('')}</div>
     ${profileTable(fx,A)}`;
   ['y','c','g2'].forEach(m=>{const up=()=>{state.odds[fx.id+'|'+m]={k:$(`v-${m}-sel`).value,o:$(`v-${m}-odd`).value};save();valueRes(m,A,fx)};
-    $(`v-${m}-sel`).addEventListener('change',up);$(`v-${m}-odd`).addEventListener('input',up);valueRes(m,A,fx)});
+    $(`v-${m}-sel`).addEventListener('change',up);$(`v-${m}-odd`).addEventListener('input',up);valueRes(m,A,fx);
+    $(`v-${m}-add`).onclick=()=>{const o=A.M.byKey[$(`v-${m}-sel`).value],c=num($(`v-${m}-odd`).value),st=num($(`v-${m}-stake`).value)||num(($(`v-${m}-stake`).placeholder.match(/[\d,.]+$/)||[''])[0])||Math.round(bankNow()*.01*100)/100;
+      if(!(c>1)){$(`v-${m}-ok`).textContent='Entrez d’abord la cote proposée par le bookmaker.';return}
+      addBet([leg(fx,o)],c,st);$(`v-${m}-ok`).innerHTML=`Ajouté : ${money(st)} à ${fr(c,2)}. <a href="#paris">Voir mes paris</a>`;$(`v-${m}-stake`).value=''}});
   bindActions(fx);
   if(!sim)setTimeout(()=>{if(curFx()!==fx)return;MCC.set(mcKey,E.simulate(A.F,fx,A.P,state.cfg.N));if(curFx()===fx&&location.hash.replace('#','')!=='donnees')renderAnalysis()},30);
 }
@@ -793,85 +814,88 @@ function profileTable(fx,A){
 }
 
 /* ---------- Sélections ---------- */
-const pickId=(fx,k)=>fx.id+'|'+k;
-function allPicks(){
-  const thr=state.thr/100,out=[],sel=state.sel,t0=E.parseDate(today());
-  state.fx.forEach(fx=>{
-    if(sel.div&&fx.div!==sel.div)return;
-    if(sel.period!=='all'){const t=E.parseDate(fx.date);if(!(t>=t0&&t<=t0+(+sel.period)*864e5))return}
-    const A=analyzeFx(fx);if(!A)return;const probs=E.KEYS.map(k=>A.M.byKey[k].p),nmin=Math.min(A.P.nh,A.P.na);
-    E.selectPicks(probs,thr).forEach(j=>{const o=A.M.byKey[E.KEYS[j]];if(sel.m&&o.m!==sel.m)return;const rel=reliability(o.k,o.p),conf=confidence(o.p,rel,nmin);
-      if(sel.conf==='h'&&conf!=='h')return;if(sel.conf==='m'&&conf==='f')return;out.push({fx,o,rel,conf,id:pickId(fx,o.k)})})});
-  const ord={h:0,m:1,f:2};out.sort((a,b)=>ord[a.conf]-ord[b.conf]||b.o.p-a.o.p);return out;
-}
-function findPick(id){
-  const fxId=id.slice(0,id.indexOf('|')),k=id.slice(id.indexOf('|')+1),fx=state.fx.find(f=>f.id===fxId);if(!fx)return null;
-  const A=analyzeFx(fx);if(!A||!A.M.byKey[k])return null;return {fx,o:A.M.byKey[k]}}
-function leg(fx,o){return {div:fx.div,h:fx.h,a:fx.a,date:fx.date,k:o.k,label:o.label,p:o.p,m:o.m}}
-function renderFilters(){
-  const divs=[...new Set(state.fx.map(f=>f.div))];
-  $('f-div').innerHTML='<option value="">Tous</option>'+divs.map(d=>`<option value="${esc(d)}">${esc(divName(d))}</option>`).join('');
-  $('f-period').value=state.sel.period;$('f-div').value=divs.includes(state.sel.div)?state.sel.div:'';$('f-mkt').value=state.sel.m;$('f-conf').value=state.sel.conf;
-}
-function renderCombo(){
-  state.combo=state.combo.filter(id=>findPick(id));const legs=state.combo.map(findPick);const el=$('combo');
-  if(!legs.length){el.innerHTML='';return}
-  const p=legs.reduce((a,l)=>a*l.o.p,1),same=new Set(legs.map(l=>l.fx.id)).size<legs.length;
-  const c=parseFloat(String(state.comboOdd||'').replace(',','.'));let v='';
-  if(c>1){const e=p*c-1;v=e>.03?`<b class="pos">Value +${fr(e*100)} %</b>`:e>-.03?'<b>Prix juste</b>':`<b class="neg">Pas de value (${fr(e*100)} %)</b>`}
-  el.innerHTML=`<div class="card combo"><div><div class="eyebrow" style="margin:0">Combiné · ${legs.length} sélection${legs.length>1?'s':''}</div><span class="big">${pct(p)}</span> <span class="muted num">cote juste ${odd(p)}</span></div>
-    <div class="fld"><label for="combo-odd">Cote proposée</label><input id="combo-odd" type="number" inputmode="decimal" step="0.01" min="1.01" value="${esc(state.comboOdd||'')}"></div>
-    <div class="sub" style="max-width:340px">${v}${same?`${v?' · ':''}<span class="neg">Deux sélections viennent du même match : elles ne sont pas indépendantes, la probabilité réelle diffère.</span>`:''}</div>
-    <div style="display:flex;gap:8px"><button type="button" class="primary small" id="combo-track">Suivre ce combiné</button><button type="button" class="small" id="combo-clear">Vider</button></div></div>`;
-  $('combo-odd').oninput=e=>{state.comboOdd=e.target.value;save();const keep=e.target.selectionStart;renderCombo();const n=$('combo-odd');n.focus();try{n.setSelectionRange(keep,keep)}catch(x){}};
-  $('combo-clear').onclick=()=>{state.combo=[];state.comboOdd='';save();renderPicks()};
-  $('combo-track').onclick=()=>{addTrack(legs.map(l=>leg(l.fx,l.o)),state.comboOdd);state.combo=[];state.comboOdd='';save();renderPicks();toast('Combiné ajouté au suivi')};
-}
+const CRANK={h:0,m:1,f:2};
+function inPeriod(fx){const d=+state.pf.days;if(!d)return true;const t=fxTs(fx),t0=E.parseDate(today());return t>=t0&&t<=t0+d*864e5}
 function renderPicks(){
-  renderFilters();renderCombo();
-  const out=allPicks(),el=$('picks');
-  if(!out.length){el.innerHTML=`<div class="empty">Aucune sélection avec ces filtres au-dessus de ${state.thr} %. Élargissez la période, baissez le seuil ou ajoutez des rencontres.</div>`;return}
-  const tracked=new Set(state.track.filter(t=>t.legs.length===1).map(t=>t.legs[0].date+t.legs[0].h+t.legs[0].a+t.legs[0].k));
-  el.innerHTML=`<table><thead><tr><th aria-label="Combiné"></th><th>Rencontre</th><th>Marché</th><th>Sélection</th><th>Probabilité · cote juste</th><th>Réussite historique</th><th>Confiance</th><th></th></tr></thead><tbody>${
-    out.slice(0,80).map(({fx,o,rel,conf,id})=>{const tk=tracked.has(fx.date+fx.h+fx.a+o.k);return `<tr><td><input type="checkbox" class="pick-cb" data-combo="${esc(id)}" aria-label="Ajouter au combiné"${state.combo.includes(id)?' checked':''}></td>
-     <td><button type="button" class="link" data-fx="${fx.id}" data-go="analyse">${esc(fx.h)} – ${esc(fx.a)}</button><div class="sub">${esc(divName(fx.div))} · ${esc(fx.date)}${fx.time?' · '+esc(fx.time):''}</div></td>
+  const thr=state.thr/100,out=[],pf=state.pf;
+  const divs=[...new Set(state.fx.map(f=>f.div))];
+  $('pf-div').innerHTML='<option value="">Tous</option>'+divs.map(d=>`<option value="${esc(d)}">${esc(divName(d))}</option>`).join('');
+  $('pf-div').value=divs.includes(pf.div)?pf.div:'';$('pf-m').value=pf.m;$('pf-days').value=pf.days;$('pf-conf').value=pf.conf;
+  state.fx.forEach(fx=>{if(pf.div&&fx.div!==pf.div)return;if(!inPeriod(fx))return;const A=analyzeFx(fx);if(!A)return;
+    const probs=E.KEYS.map(k=>A.M.byKey[k].p),nmin=Math.min(A.P.nh,A.P.na);
+    E.selectPicks(probs,thr).forEach(j=>{const o=A.M.byKey[E.KEYS[j]];if(pf.m&&o.m!==pf.m)return;const rel=reliability(o.k,o.p),conf=confidence(o.p,rel,nmin);
+      if(CRANK[conf]>CRANK[pf.conf])return;out.push({fx,o,rel,conf})})});
+  out.sort((a,b)=>CRANK[a.conf]-CRANK[b.conf]||b.o.p-a.o.p);
+  const el=$('picks');PICKS.clear();
+  if(!out.length){el.innerHTML=`<div class="empty">Aucune sélection avec ces filtres au-dessus de ${state.thr} %. Baissez le seuil, élargissez la période ou ajoutez des rencontres.</div>`;renderCombo();return}
+  el.innerHTML=`<table><thead><tr><th><span class="sr">Combiné</span></th><th>Rencontre</th><th>Marché</th><th>Sélection</th><th>Probabilité · cote juste</th><th>Réussite historique</th><th>Confiance</th></tr></thead><tbody>${
+    out.slice(0,80).map(({fx,o,rel,conf})=>{const key=fx.id+'#'+o.k;PICKS.set(key,leg(fx,o));
+      return `<tr><td><input type="checkbox" data-pick="${esc(key)}" aria-label="Ajouter au combiné"${COMBO.has(key)?' checked':''}></td><td><button type="button" class="link" data-fx="${fx.id}" data-go="analyse">${esc(fx.h)} – ${esc(fx.a)}</button><div class="sub">${esc(divName(fx.div))} · ${esc(fx.date)}</div></td>
      <td><span class="mkt-tag"><span class="dot" style="background:${MK[o.m].color}"></span>${MK[o.m].t}</span></td><td>${esc(o.label)}</td>
-     <td style="min-width:140px">${pcell(o.p,true)}</td><td class="num">${rel&&rel.n>=5?`${pct(rel.r)} <span class="muted">(${rel.n})</span>`:'—'}</td><td>${chip(conf)}</td>
-     <td><button type="button" class="small" data-track="${esc(id)}"${tk?' disabled':''}>${tk?'Suivi':'Suivre'}</button></td></tr>`}).join('')}</tbody></table>`;
+     <td style="min-width:140px">${pcell(o.p,true)}</td><td class="num">${rel&&rel.n>=5?`${pct(rel.r)} <span class="muted">(${rel.n})</span>`:'—'}</td><td>${chip(conf)}</td></tr>`}).join('')}</tbody></table>`;
+  renderCombo();
+}
+const PICKS=new Map();
+function renderCombo(){
+  const el=$('combo'),legs=[...COMBO.values()];el.hidden=!legs.length;if(!legs.length){el.innerHTML='';return}
+  const p=legs.reduce((a,l)=>a*l.p,1),dup=new Set(legs.map(l=>l.fx)).size<legs.length;
+  el.innerHTML=`<div class="combo-in"><div style="min-width:0"><p class="eyebrow" style="margin:0 0 6px">${legs.length>1?'Combiné de '+legs.length+' sélections':'Pari simple'}</p>
+    <ul class="legs">${legs.map(l=>`<li>${esc(l.h)} – ${esc(l.a)} : <b>${esc(l.label)}</b> <span class="num muted">${pct(l.p)}</span></li>`).join('')}</ul>
+    ${dup?'<div class="warn" style="margin-top:6px">Deux sélections portent sur le même match : elles sont liées entre elles, la probabilité réelle du combiné peut différer.</div>':''}</div>
+    <div class="combo-side"><div class="combo-p"><span class="sub">Probabilité</span><b class="num">${pct(p)}</b><span class="sub">cote juste ${odd(p)}</span></div>
+    <div class="vrow2"><input id="cb-odd" type="number" inputmode="decimal" min="1.01" step="0.01" placeholder="Cote"><input id="cb-stake" type="number" inputmode="decimal" min="0" step="0.5" placeholder="Mise"></div>
+    <div class="sub" id="cb-res"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="primary" id="cb-add">Ajouter à mes paris</button><button type="button" id="cb-clear">Vider</button></div></div></div>`;
+  const upd=()=>{const c=num($('cb-odd').value);$('cb-res').innerHTML=c>1?(p*c-1>.03?`<b class="pos">Value +${fr((p*c-1)*100)} %</b>`:p*c-1>-.03?'<b>Proche du juste prix</b>':`<b class="neg">Pas de value (${fr((p*c-1)*100)} %)</b>`):''};
+  $('cb-odd').oninput=upd;
+  $('cb-add').onclick=()=>{const c=num($('cb-odd').value),st=num($('cb-stake').value)||Math.round(bankNow()*.01*100)/100;if(!(c>1)){$('cb-res').textContent='Entrez la cote proposée par le bookmaker.';return}
+    addBet(legs,c,st);COMBO.clear();renderPicks();const m=$('picks-msg');m.innerHTML=`Pari ajouté : ${money(st)} à ${fr(c,2)}. <a href="#paris">Voir mes paris</a>`};
+  $('cb-clear').onclick=()=>{COMBO.clear();renderPicks()};
 }
 
-/* ---------- Suivi des paris ---------- */
-function addTrack(legs,o){state.track.unshift({id:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),at:Date.now(),legs,p:legs.reduce((a,l)=>a*l.p,1),odd:o||'',res:null});save();settle()}
-function settle(){
-  let changed=false;
-  state.track.forEach(t=>{if(t.res!=null)return;let all=true,lost=false;
-    t.legs.forEach(l=>{if(l.res==null){const ts=E.parseDate(l.date),row=(DATA[l.div]||[]).find(r=>r.h===l.h&&r.a===l.a&&Math.abs(r.t-ts)<=864e5);
-      if(row){l.res=E.outcome(l.k,row);l.score=`${row.hg1+row.hg2}-${row.ag1+row.ag2} · ${row.hc+row.ac} corners · ${row.hy+row.ay} cartons · 2ᵉ MT ${row.hg2}-${row.ag2}`;changed=true}}
-      if(l.res==null)all=false;else if(l.res===0)lost=true});
-    if(lost){t.res=0;changed=true}else if(all){t.res=1;changed=true}});
-  if(changed)save();
+/* ---------- Mes paris ---------- */
+const num=v=>{const x=parseFloat(String(v==null?'':v).replace(',','.'));return isFinite(x)?x:0};
+function money(x){return (x<0?'−':'')+Math.abs(x).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' '+state.money}
+function leg(fx,o){return {fx:fx.id,div:fx.div,h:fx.h,a:fx.a,date:fx.date,k:o.k,m:o.m,label:o.label,p:o.p}}
+function addBet(legs,odd,stake){state.bets.unshift({id:'b'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),legs:legs.map(l=>Object.assign({},l)),odd,stake,p:legs.reduce((a,l)=>a*l.p,1),st:'open',at:Date.now()});settleBets();save();renderStatus()}
+const profitOf=b=>b.st==='won'?b.stake*(b.odd-1):b.st==='lost'?-b.stake:0;
+function bankNow(){return state.bank+state.bets.reduce((s,b)=>s+profitOf(b),0)}
+function findResult(l){const rows=DATA[l.div];if(!rows)return null;const t=E.parseDate(l.date);return rows.find(r=>r.h===l.h&&r.a===l.a&&Math.abs(r.t-t)<=2*864e5)||null}
+function settleBets(){
+  let ch=false;
+  state.bets.forEach(b=>{if(b.st!=='open')return;let all=true,lost=false;
+    b.legs.forEach(l=>{const r=findResult(l);if(!r){all=false;return}l.won=E.outcome(l.k,r);l.res=`${r.hg1+r.hg2}-${r.ag1+r.ag2} · ${r.hc+r.ac} corners · ${r.hy+r.ay} cartons · 2ᵉ MT ${r.hg2}-${r.ag2}`;if(!l.won)lost=true});
+    if(lost){b.st='lost';b.auto=1;ch=true}else if(all){b.st='won';b.auto=1;ch=true}});
+  if(ch)save();
 }
-function renderTrack(){
-  const el=$('suivi'),T=state.track;
-  if(!T.length){el.innerHTML='<div class="card empty">Aucun pari suivi. Dans « Sélections fortes », touchez « Suivre » sur une sélection ou cochez plusieurs lignes pour suivre un combiné.</div>';return}
-  const done=T.filter(t=>t.res!=null),wins=done.filter(t=>t.res===1).length,withOdd=done.filter(t=>parseFloat(t.odd)>1);
-  const profit=withOdd.reduce((a,t)=>a+(t.res?parseFloat(String(t.odd).replace(',','.'))-1:-1),0),mp=done.length?done.reduce((a,t)=>a+t.p,0)/done.length:null;
-  const st=t=>t.res==null?'<span class="st st-p">En attente</span>':t.res?'<span class="st st-w">Gagné</span>':'<span class="st st-l">Perdu</span>';
-  el.innerHTML=`<div class="tiles">
-    <div class="card tile"><h3>Paris réglés</h3><span class="big">${done.length} / ${T.length}</span></div>
-    <div class="card tile"><h3>Réussite réelle</h3><span class="big ${mp==null?'':wins/done.length>=mp-.02?'pos':'neg'}">${done.length?pct(wins/done.length):'—'}</span><div class="row"><span>Probabilité annoncée</span><b>${pct(mp)}</b></div></div>
-    <div class="card tile"><h3>Bénéfice</h3><span class="big ${!withOdd.length?'':profit>=0?'pos':'neg'}">${withOdd.length?(profit>=0?'+':'')+fr(profit,2)+' u':'—'}</span><div class="row"><span>ROI sur ${withOdd.length} pari${withOdd.length>1?'s':''} avec cote</span><b>${withOdd.length?(profit>=0?'+':'')+fr(profit/withOdd.length*100)+' %':'—'}</b></div></div>
-  </div>
-  <div class="card tbl-wrap"><table><thead><tr><th>Pari</th><th>Probabilité</th><th>Cote jouée</th><th>Statut</th><th></th></tr></thead><tbody>${T.map(t=>`<tr>
-    <td>${t.legs.map(l=>`<div><b>${esc(l.h)} – ${esc(l.a)}</b> <span class="sub">${esc(l.date)}</span><br>${esc(l.label)} ${l.res==null?'':l.res?'<span class="pos">✓</span>':'<span class="neg">✗</span>'}${l.score?`<div class="sub">${esc(l.score)}</div>`:''}</div>`).join('<div style="height:6px"></div>')}</td>
-    <td class="num">${pct(t.p)}<div class="sub">juste ${odd(t.p)}</div></td>
-    <td><input type="number" inputmode="decimal" step="0.01" min="1.01" style="width:90px" data-todd="${t.id}" value="${esc(t.odd)}" aria-label="Cote jouée"></td>
-    <td>${st(t)}</td><td><button type="button" class="small danger" data-tdel="${t.id}">Retirer</button></td></tr>`).join('')}</tbody></table></div>
-  <p class="sub" style="margin-top:10px">Bénéfice calculé pour une mise de 1 unité par pari, uniquement sur les paris dont la cote est renseignée.</p>`;
-  el.querySelectorAll('[data-todd]').forEach(i=>i.onchange=()=>{const t=state.track.find(x=>x.id===i.dataset.todd);if(t){t.odd=i.value;save();renderTrack()}});
+function renderBets(){
+  const el=$('bets'),B=state.bets,set=B.filter(b=>b.st==='won'||b.st==='lost'),open=B.filter(b=>b.st==='open');
+  const staked=set.reduce((s,b)=>s+b.stake,0),profit=set.reduce((s,b)=>s+profitOf(b),0),won=set.filter(b=>b.st==='won').length,expp=set.length?set.reduce((s,b)=>s+b.p,0)/set.length:null;
+  const tile=(t,v,sub,cls)=>`<div class="card tile"><span class="sub">${t}</span><span class="big ${cls||''}">${v}</span><span class="sub">${sub||''}</span></div>`;
+  const ST={open:['En cours','c-m'],won:['Gagné','c-h'],lost:['Perdu','c-f'],void:['Annulé','c-m']};
+  const rows=B.map(b=>{const multi=b.legs.length>1;
+    return `<tr><td class="num">${esc(b.legs[0].date)}</td><td>${b.legs.map(l=>`<div><b>${esc(l.h)} – ${esc(l.a)}</b><div class="sub">${esc(l.label)}${l.res?` · <span class="${l.won?'pos':'neg'}">${esc(l.res)}</span>`:''}</div></div>`).join('')}${multi?`<span class="chip c-m">Combiné ×${b.legs.length}</span>`:''}</td>
+      <td class="num">${fr(b.odd,2)}</td><td class="num">${money(b.stake)}</td><td class="num">${pct(b.p)}</td><td><span class="chip ${ST[b.st][1]}">${ST[b.st][0]}</span>${b.auto?'<div class="sub">réglé automatiquement</div>':''}</td>
+      <td class="num ${profitOf(b)>0?'pos':profitOf(b)<0?'neg':''}">${b.st==='open'?'—':money(profitOf(b))}</td>
+      <td><div class="bet-act">${b.st==='open'?`<button type="button" data-bset="${b.id}|won">Gagné</button><button type="button" data-bset="${b.id}|lost">Perdu</button><button type="button" data-bset="${b.id}|void">Annulé</button>`:`<button type="button" data-bset="${b.id}|open">Rouvrir</button>`}<button type="button" class="danger" data-bdel="${b.id}">Supprimer</button></div></td></tr>`}).join('');
+  el.innerHTML=`<div class="bank-row"><div class="fld"><label for="bk">Bankroll de départ</label><input id="bk" type="number" inputmode="decimal" min="0" step="1" value="${state.bank}"></div>
+      <div class="fld"><label for="bk-cur">Devise</label><input id="bk-cur" type="text" maxlength="4" value="${esc(state.money)}"></div></div>
+    <div class="tiles">${tile('Bankroll actuelle',money(bankNow()),`départ ${money(state.bank)}`)}${tile('Profit',money(profit),staked?`ROI ${profit>=0?'+':''}${fr(profit/staked*100)} %`:'aucun pari réglé',profit>0?'pos':profit<0?'neg':'')}
+      ${tile('Réussite',set.length?pct(won/set.length):'—',set.length?`${won} / ${set.length} · le modèle annonçait ${pct(expp)}`:'')}${tile('En cours',String(open.length),open.length?`${money(open.reduce((s,b)=>s+b.stake,0))} engagés`:'')}</div>
+    ${set.length>=2?`<div class="card calib" style="margin-bottom:16px"><p class="eyebrow" style="margin:0 0 6px">Évolution du profit</p>${curve(set)}</div>`:''}
+    <div class="card tbl-wrap">${B.length?`<table><thead><tr><th>Date</th><th>Pari</th><th>Cote</th><th>Mise</th><th>Proba</th><th>Statut</th><th>Gain</th><th></th></tr></thead><tbody>${rows}</tbody></table>`:'<div class="empty">Aucun pari. Ajoutez-en depuis l’analyse d’un match (cote + mise) ou en cochant des sélections fortes. Les paris se règlent seuls quand les résultats arrivent dans la base.</div>'}</div>`;
+  $('bk').onchange=()=>{state.bank=Math.max(0,num($('bk').value));save();renderBets()};
+  $('bk-cur').onchange=()=>{state.money=$('bk-cur').value.trim()||'$';save();renderBets()};
 }
-function toast(msg){let t=$('toast');if(!t){t=document.createElement('div');t.id='toast';t.setAttribute('role','status');t.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:8px;font-weight:600;z-index:20';document.body.appendChild(t)}
-  t.textContent=msg;t.hidden=false;clearTimeout(t._h);t._h=setTimeout(()=>{t.hidden=true},2200)}
+function curve(set){
+  const S=set.slice().sort((a,b)=>E.parseDate(a.legs[0].date)-E.parseDate(b.legs[0].date)||a.at-b.at);let c=0;const pts=[0].concat(S.map(b=>c+=profitOf(b)));
+  const W=1000,H=220,L=56,R=12,T=12,Bt=26,mn=Math.min(0,...pts),mx=Math.max(0,...pts),rg=(mx-mn)||1,x=i=>L+i*(W-L-R)/(pts.length-1),y=v=>T+(mx-v)/rg*(H-T-Bt);
+  const line=pts.map((v,i)=>x(i).toFixed(1)+','+y(v).toFixed(1)).join(' '),end=pts[pts.length-1],col=end>=0?'var(--pitch)':'var(--red)';
+  return `<svg class="curve" viewBox="0 0 ${W} ${H}" role="img" aria-label="Profit cumulé">
+    <line x1="${L}" x2="${W-R}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)"/><text x="${L-6}" y="${y(mx)+4}" text-anchor="end">${fr(mx,0)}</text><text x="${L-6}" y="${y(mn)+4}" text-anchor="end">${fr(mn,0)}</text><text x="${L-6}" y="${y(0)+4}" text-anchor="end">0</text>
+    <polygon points="${x(0)},${y(0)} ${line} ${x(pts.length-1)},${y(0)}" fill="${col}" fill-opacity=".12"/><polyline points="${line}" fill="none" stroke="${col}" stroke-width="2"/>
+    <circle cx="${x(pts.length-1)}" cy="${y(end)}" r="4" fill="${col}"/><text x="${(L+W-R)/2}" y="${H-4}" text-anchor="middle">${pts.length-1} paris réglés</text></svg>`;
+}
 
 /* ---------- Validation ---------- */
 function renderValidation(){
@@ -891,13 +915,19 @@ function renderValidation(){
       <div class="row"><span>Gain de précision vs moyenne (Brier)</span><b class="${bss>0?'pos':'neg'}">${bss>0?'+':''}${fr(bss*100)} %</b></div></div>`}).join('');
   const table=['y','c','g2'].map(m=>groups[m].map(j=>{const s=stat(j),k=E.KMETA[j],lab=k.extra?markLabel(k.k):`Plus de ${fr(k.line)} ${{y:'cartons',c:'corners',g2:'buts 2ᵉ MT'}[m]}`;
     return `<tr><td><span class="mkt-tag"><span class="dot" style="background:${MK[m].color}"></span>${MK[m].t}</span></td><td>${lab}</td><td class="num">${pct(s.mp)}</td><td class="num">${pct(s.f)}</td><td class="num">${fr(s.b,3)}</td><td class="num ${s.bss>0?'pos':'neg'}">${s.bss>0?'+':''}${fr(s.bss*100)} %</td></tr>`}).join('')).join('');
-  el.innerHTML=`<div class="tiles">${tiles}</div>
+  const W=BT.W,cs=BT.cs,lr=(t,v,sub)=>`<div class="row"><span>${t}</span><b>${v}</b></div>${sub?`<div class="sub">${sub}</div>`:''}`;
+  const learn=`<div class="card tile learn"><h3>Apprentissage automatique</h3>
+    ${lr('Poids des cotes du marché (buts)',W.nm?pct(W.m):'—',W.nm?`appris sur ${W.nm.toLocaleString('fr-FR')} matchs avec cotes Plus/Moins de 2,5`:'aucune cote dans la base')}
+    ${lr('Poids des fautes commises (cartons)',W.nf?pct(W.f):'—',W.nf?`appris sur ${W.nf.toLocaleString('fr-FR')} matchs avec fautes`:'colonnes HF/AF absentes')}
+    ${['y','c','g2'].map(m=>{const c=cs[m];return lr('Calibration '+MK[m].t.toLowerCase(),c.b0==null?'—':c.used?'appliquée':'non nécessaire',c.b0==null?'pas assez de matchs pour la tester':`Brier sur les 30 % de matchs les plus récents : ${fr(c.b0,4)} → ${fr(c.b1,4)}`)}).join('')}</div>`;
+  el.innerHTML=`<div class="tiles">${learn}${tiles}</div>
     <div class="calib-wrap"><div class="card calib"><div class="bar-head" style="margin-bottom:6px"><p class="eyebrow" style="margin:0">Calibration : probabilité annoncée contre fréquence réelle</p>
       <div class="seg">${['y','c','g2'].map(m=>`<button type="button" data-cal="${m}" aria-pressed="${state.calib===m}">${MK[m].t}</button>`).join('')}</div></div>${calibSvg(state.calib,groups[state.calib])}</div>
       <div class="card prose" style="padding:16px"><p class="eyebrow">Lire ces résultats</p>
       <p><b>Calibration.</b> Si le modèle est bien réglé, les points suivent la diagonale : parmi les paris annoncés à 70 %, environ 70 % passent. Un point sous la diagonale signale un excès d’optimisme dans cette zone.</p>
       <p><b>Réussite réelle.</b> C’est le pourcentage de sélections gagnantes quand le modèle dépasse le seuil choisi. Comparez-le à la probabilité annoncée : un écart de plus de 3 points doit rendre prudent.</p>
       <p><b>Gain de précision.</b> Le score de Brier compare le modèle à une prédiction naïve (la fréquence moyenne de la ligue). Un gain positif signifie que les notes d’équipes apportent une information réelle. Les totaux de corners et de cartons sont très aléatoires : un gain de 3 à 8 % est déjà solide.</p>
+      <p><b>Apprentissage.</b> Les poids du marché et des fautes sont choisis pour minimiser l’erreur sur tout l’historique. La calibration est apprise sur les 70 % de matchs les plus anciens, puis gardée seulement si elle améliore les 30 % les plus récents.</p>
       <p><b>Base :</b> ${N.toLocaleString('fr-FR')} matchs prédits, chacun avec les seules données antérieures${state.demo?'. La démo étant simulée, ses résultats illustrent la méthode sans valeur réelle':''}.</p></div></div>
     <div class="card tbl-wrap" style="margin-top:18px"><table><thead><tr><th>Marché</th><th>Pari</th><th>Proba moyenne</th><th>Fréquence réelle</th><th>Brier</th><th>Gain vs moyenne</th></tr></thead><tbody>${table}</tbody></table></div>`;
 }
@@ -936,6 +966,7 @@ function renderCatalog(){
       return `<a class="dl${h?' have':''}" href="https://www.football-data.co.uk/mmz4281/${s.code}/${code}.csv" target="_blank" rel="noopener" title="${h?'Déjà importée':'Télécharger la saison '+s.label}">${h?'✓ ':''}${s.label}</a>`}).join('')}</div></td></tr>`).join('')).join('')}</tbody></table>`;
 }
 /* ---------- Mise à jour automatique (application Android) ---------- */
+const NATIVE=window.MatchlabNative||null;
 const pend={};let nid=0,updating=false,autoMsg='';
 window.__mlNative=(id,ok,txt)=>{const p=pend[id];if(!p)return;delete pend[id];ok?p.res(txt):p.rej(new Error(txt))};
 function nfetch(url){return new Promise((res,rej)=>{const id='r'+(++nid);pend[id]={res,rej};
@@ -943,9 +974,17 @@ function nfetch(url){return new Promise((res,rej)=>{const id='r'+(++nid);pend[id
   try{NATIVE.fetch(id,url)}catch(e){delete pend[id];rej(e)}})}
 function setAutoMsg(t){autoMsg=t;const el=$('auto-msg');if(el)el.textContent=t}
 function loadFixtures(txt){
-  const t0=E.parseDate(today()),list=E.parseFixtures(txt).filter(f=>state.auto.divs.includes(f.div)&&f.t>=t0).map(f=>{const date=new Date(f.t).toISOString().slice(0,10);
-    return {id:'up-'+f.div+'-'+date+'-'+f.h+'-'+f.a,div:f.div,h:f.h,a:f.a,ref:f.ref,ctx:'normal',date,time:f.time,md:f.md,mo:f.mo,auto:1}});
-  list.sort((x,y)=>(x.date+x.time).localeCompare(y.date+y.time));
+  const lines=String(txt).replace(/^﻿/,'').split(/\r?\n/).filter(l=>l.trim());if(lines.length<2)return 0;
+  const sp=l=>{const o=[];let c='',q=false;for(const ch of l){if(ch==='"')q=!q;else if(ch===','&&!q){o.push(c);c=''}else c+=ch}o.push(c);return o.map(x=>x.trim())};
+  const h=sp(lines[0]),ix=n=>h.indexOf(n),iD=ix('Div'),iDt=ix('Date'),iH=ix('HomeTeam'),iA=ix('AwayTeam'),iR=ix('Referee');
+  const first=(...ns)=>{for(const n of ns){const i=ix(n);if(i>=0)return i}return -1},iO=first('Avg>2.5','B365>2.5','P>2.5','Max>2.5'),iU=first('Avg<2.5','B365<2.5','P<2.5','Max<2.5');
+  if(iD<0||iDt<0||iH<0||iA<0)return 0;
+  const t0=E.parseDate(today()),list=[];
+  for(let i=1;i<lines.length;i++){const f=sp(lines[i]),div=f[iD],t=E.parseDate(f[iDt]);
+    if(!state.auto.divs.includes(div)||!(t>=t0)||!f[iH]||!f[iA])continue;
+    const date=new Date(t).toISOString().slice(0,10);
+    list.push({id:'up-'+div+'-'+date+'-'+f[iH]+'-'+f[iA],div,h:f[iH],a:f[iA],ref:iR>=0?(f[iR]||''):'',ctx:'normal',date,auto:1,oo:iO>=0&&+f[iO]>1?+f[iO]:null,ou:iU>=0&&+f[iU]>1?+f[iU]:null})}
+  list.sort((x,y)=>x.date.localeCompare(y.date));
   state.fx=list.concat(state.fx.filter(f=>!f.auto));
   if(list.length&&!state.fx.find(f=>f.id===state.cur))state.cur=list[0].id;
   return list.length;
@@ -992,7 +1031,7 @@ function renderData(){
     items.push(`<li><div><b>${esc(d.name)}</b><div class="sub">${divs.map(x=>esc(divName(x))).join(', ')} · ${d.rows.length} matchs · ${dstr(Math.min(...t))} → ${dstr(Math.max(...t))}</div></div><button type="button" class="danger" data-rm="${d.id}">Supprimer</button></li>`)});
   if(!state.demo)items.push(`<li><div class="sub">La démo est désactivée.</div><button type="button" data-demo="on">Réactiver la démo</button></li>`);
   $('ds-list').innerHTML=items.join('');
-  $('s-mkt').value=state.cfg.mkt?'1':'0';$('s-hl').value=state.cfg.hl;$('s-k').value=state.cfg.k;$('s-kr').value=state.cfg.kr;$('s-n').value=state.cfg.N;
+  $('s-hl').value=state.cfg.hl;$('s-k').value=state.cfg.k;$('s-kr').value=state.cfg.kr;$('s-n').value=state.cfg.N;
 }
 function importText(text,name,fallback){
   const res=E.parseCSV(text,fallback);
@@ -1014,42 +1053,41 @@ function afterImport(any,msgs){
 }
 
 /* ---------- Navigation ---------- */
-const VIEWS=['analyse','selections','validation','suivi','donnees'];
+const VIEWS=['analyse','selections','paris','validation','donnees'];
 function renderView(){
   const v=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):'analyse';
   VIEWS.forEach(x=>{$('v-'+x).hidden=x!==v});document.querySelectorAll('.tabs a').forEach(a=>a.setAttribute('aria-current',a.dataset.v===v?'page':'false'));
   renderStatus();
   if(v==='analyse'){renderFxList();renderAnalysis()}
   if(v==='selections'){$('thr').value=state.thr;$('thr-out').textContent=state.thr+' %';renderPicks()}
+  if(v==='paris')renderBets();
   if(v==='validation')renderValidation();
-  if(v==='suivi')renderTrack();
   if(v==='donnees')renderData();
 }
 window.addEventListener('hashchange',renderView);
 
 document.addEventListener('click',e=>{
   const fxb=e.target.closest('[data-fx]');if(fxb){state.cur=fxb.dataset.fx;save();if(fxb.dataset.go&&location.hash!=='#analyse')location.hash='analyse';else renderView();window.scrollTo({top:0,behavior:'smooth'});return}
+  const bs=e.target.closest('[data-bset]');if(bs){const [id,st]=bs.dataset.bset.split('|'),b=state.bets.find(x=>x.id===id);if(b){b.st=st;b.auto=0;save();renderBets();renderStatus()}return}
+  const bd=e.target.closest('[data-bdel]');if(bd){if(!bd.classList.contains('armed')){bd.classList.add('armed');bd.textContent='Confirmer';setTimeout(()=>{bd.classList.remove('armed');bd.textContent='Supprimer'},4000);return}
+    state.bets=state.bets.filter(x=>x.id!==bd.dataset.bdel);save();renderBets();renderStatus();return}
   const cal=e.target.closest('[data-cal]');if(cal){state.calib=cal.dataset.cal;save();renderValidation();return}
   const rm=e.target.closest('[data-rm]');if(rm){if(!rm.classList.contains('armed')){rm.classList.add('armed');rm.textContent='Confirmer';setTimeout(()=>{rm.classList.remove('armed');rm.textContent='Supprimer'},4000);return}
     state.ds=state.ds.filter(d=>d.id!==rm.dataset.rm);if(!state.ds.length)state.demo=true;save();rebuild();fillBuilder();renderView();return}
-  const tr=e.target.closest('[data-track]');if(tr){const f=findPick(tr.dataset.track);if(f){addTrack([leg(f.fx,f.o)],'');renderPicks();toast('Ajouté au suivi')}return}
-  const td=e.target.closest('[data-tdel]');if(td){if(!td.classList.contains('armed')){td.classList.add('armed');td.textContent='Confirmer';setTimeout(()=>{td.classList.remove('armed');td.textContent='Retirer'},4000);return}
-    state.track=state.track.filter(t=>t.id!==td.dataset.tdel);save();renderTrack();return}
   const dm=e.target.closest('[data-demo]');if(dm){state.demo=dm.dataset.demo==='on';if(!state.demo)state.fx=state.fx.filter(f=>f.div!=='DEMO');save();rebuild();fillBuilder();renderView()}
 });
-document.addEventListener('change',e=>{const cb=e.target.closest('[data-combo]');if(!cb)return;const id=cb.dataset.combo;
-  state.combo=cb.checked?[...new Set(state.combo.concat(id))]:state.combo.filter(x=>x!==id);save();renderCombo()});
-[['f-period','period'],['f-div','div'],['f-mkt','m'],['f-conf','conf']].forEach(([id,k])=>$(id).addEventListener('change',()=>{state.sel[k]=$(id).value;save();renderPicks()}));
 $('b-div').addEventListener('change',fillTeams);
+document.addEventListener('change',e=>{const cb=e.target.closest('[data-pick]');if(!cb)return;const k=cb.dataset.pick;if(cb.checked&&PICKS.has(k))COMBO.set(k,PICKS.get(k));else COMBO.delete(k);$('picks-msg').textContent='';renderCombo()});
+['pf-div','pf-m','pf-days','pf-conf'].forEach(id=>$(id).addEventListener('change',()=>{state.pf={div:$('pf-div').value,m:$('pf-m').value,days:$('pf-days').value,conf:$('pf-conf').value};save();renderPicks()}));
 $('b-add').addEventListener('click',()=>{
-  const fx={id:'f'+Date.now().toString(36),div:$('b-div').value,h:$('b-h').value,a:$('b-a').value,ref:$('b-ref').value,ctx:$('b-ctx').value,date:$('b-date').value||today()};
-  {const n=id=>parseFloat(String($(id).value).replace(',','.'));Object.assign(fx,E.marketFeat(n('b-o1'),n('b-oN'),n('b-o2'),n('b-oo'),n('b-ou')))}
+  const fx={id:'f'+Date.now().toString(36),div:$('b-div').value,h:$('b-h').value,a:$('b-a').value,ref:$('b-ref').value,ctx:$('b-ctx').value,date:$('b-date').value||today(),oo:num($('b-oo').value)||null,ou:num($('b-ou').value)||null};
+  if(!!fx.oo!==!!fx.ou){$('b-msg').textContent='Entrez les deux cotes (Plus et Moins de 2,5) ou aucune.';return}
   if(!fx.div||!fx.h||!fx.a){$('b-msg').textContent='Importez d’abord des données.';return}
   if(fx.h===fx.a){$('b-msg').textContent='Choisissez deux équipes différentes.';return}
   $('b-msg').textContent='';state.fx.unshift(fx);state.cur=fx.id;save();renderView();
 });
 $('thr').addEventListener('input',()=>{state.thr=+$('thr').value;$('thr-out').textContent=state.thr+' %';save();renderPicks()});
-['s-mkt','s-hl','s-k','s-kr','s-n'].forEach(id=>$(id).addEventListener('change',()=>{state.cfg={mkt:$('s-mkt').value==='1',hl:+$('s-hl').value,k:+$('s-k').value,kr:+$('s-kr').value,N:+$('s-n').value};save();rebuild();fillBuilder();renderView()}));
+['s-hl','s-k','s-kr','s-n'].forEach(id=>$(id).addEventListener('change',()=>{state.cfg={hl:+$('s-hl').value,k:+$('s-k').value,kr:+$('s-kr').value,N:+$('s-n').value};save();rebuild();fillBuilder();renderView()}));
 $('file').addEventListener('change',e=>{if(e.target.files.length)importFiles([...e.target.files]);e.target.value=''});
 const drop=$('drop');
 ['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over')}));

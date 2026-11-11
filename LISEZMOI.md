@@ -19,6 +19,14 @@ Elle télécharge elle-même les championnats (football-data.co.uk) et le calend
 Ouvrez ce dossier dans Android Studio, laissez la synchronisation se terminer,
 puis « Build » → « Build APK(s) ».
 
+## Nouveautés de la version 1.1
+
+- Cotes du marché (Plus/Moins de 2,5 buts) intégrées aux prévisions de buts, avec un poids appris sur l'historique.
+- Fautes commises intégrées aux prévisions de cartons, avec un poids appris sur l'historique.
+- Calibration automatique des probabilités, gardée seulement si elle améliore les matchs les plus récents.
+- Onglet « Mes paris » : bankroll, profit, ROI, courbe, règlement automatique avec les résultats.
+- Sélections fortes : filtres (championnat, marché, période, confiance) et combinés.
+
 ## Fonctionnement
 
 - Au premier lancement, l'application télécharge 3 saisons des championnats cochés,
