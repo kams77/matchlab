@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,3 +32,14 @@ jobs:
         with:
           name: Matchlab-APK
           path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Renommer l'APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk Matchlab.apk
+
+      - name: Publier la version
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Matchlab 1.0.${{ github.run_number }}
+          body: "Téléchargez Matchlab.apk ci-dessous et installez-le sur votre téléphone."
+          files: Matchlab.apk
