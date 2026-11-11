@@ -125,7 +125,33 @@ public class MainActivity extends Activity {
     /** Pont appelé depuis la page : MatchlabNative.fetch(id, url). */
     private class Bridge {
         @JavascriptInterface
-        public String version() { return "1.0"; }
+        public String version() { return "1.1"; }
+
+        /** Sauvegarde des données dans un fichier privé de l'application (pas de limite de taille du navigateur). */
+        @JavascriptInterface
+        public String saveData(String key, String value) {
+            try (java.io.FileOutputStream out = openFileOutput(safe(key) + ".json", MODE_PRIVATE)) {
+                out.write(value.getBytes(StandardCharsets.UTF_8));
+                return "ok";
+            } catch (Exception e) {
+                return "error";
+            }
+        }
+
+        @JavascriptInterface
+        public String loadData(String key) {
+            try (InputStream in = openFileInput(safe(key) + ".json")) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                byte[] buf = new byte[65536];
+                int r;
+                while ((r = in.read(buf)) != -1) out.write(buf, 0, r);
+                return new String(out.toByteArray(), StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                return "";
+            }
+        }
+
+        private String safe(String key) { return key.replaceAll("[^A-Za-z0-9._-]", "_"); }
 
         @JavascriptInterface
         public void fetch(final String id, final String url) {

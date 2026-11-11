@@ -25,3 +25,9 @@ puis « Build » → « Build APK(s) ».
   puis les met à jour à chaque ouverture si les données ont plus de 6 heures.
 - Onglet « Données » : choix des championnats et mise à jour manuelle.
 - Le seul site contacté est www.football-data.co.uk.
+
+## Modifier l'application
+
+Les sources de la page sont dans `web/` (`head.html`, `engine.js`, `ui.js`).
+Après modification, lancez `python3 web/build.py` : il régénère `app/src/main/assets/index.html`.
+Chaque envoi sur GitHub compile et publie un nouvel APK dans « Releases ».

@@ -1,0 +1,332 @@
+<title>Matchlab Pronostics</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout : feuille de match — onglets Analyse / Sélections / Validation / Données ; panneaux de marché cartons, corners, 2e MT */
+:root{
+  --paper:#F1F4EF; --surface:#FFFFFF; --ink:#13201A; --muted:#5A6A61; --line:#D6DFD8;
+  --pitch:#1D6A43; --pitch-soft:#E1EEE5; --yellow:#C99A06; --yellow-soft:#FBF0C8; --red:#BF372C; --red-soft:#F8E0DD;
+  --bar:#C9D6CD;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-num:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0E1512; --surface:#16201B; --ink:#E6EEE8; --muted:#93A399; --line:#27342D;
+  --pitch:#55B884; --pitch-soft:#1B3427; --yellow:#F0C63E; --yellow-soft:#3A3115; --red:#E46A5E; --red-soft:#3D1F1C;
+  --bar:#33443A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0E1512; --surface:#16201B; --ink:#E6EEE8; --muted:#93A399; --line:#27342D;
+  --pitch:#55B884; --pitch-soft:#1B3427; --yellow:#F0C63E; --yellow-soft:#3A3115; --red:#E46A5E; --red-soft:#3D1F1C;
+  --bar:#33443A; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:7px 12px;font-weight:500}
+button:hover{border-color:var(--pitch)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.primary{background:var(--pitch);color:var(--surface);border-color:var(--pitch)}
+button.danger{color:var(--red)}
+button.armed{background:var(--red);color:var(--surface);border-color:var(--red)}
+button.link{border:none;background:none;padding:0;text-align:left;font-weight:600}
+:focus-visible{outline:2px solid var(--pitch);outline-offset:2px}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+h2.sec{font-family:var(--f-display);font-size:26px;text-transform:uppercase;margin:0;letter-spacing:.02em;text-wrap:balance}
+.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:600}
+select,input[type=number],input[type=date],input[type=text],textarea{padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--paper);width:100%;min-width:0}
+
+/* En-tête et onglets */
+.top{border-bottom:1px solid var(--line);background:var(--surface)}
+.top-in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:14px 0;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:34px;height:34px;border-radius:50%;border:3px solid var(--pitch);position:relative;flex:none}
+.logo::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:3px;margin-left:-1.5px;background:var(--pitch)}
+.brand h1{font-family:var(--f-display);font-size:26px;letter-spacing:.02em;margin:0;line-height:1;text-transform:uppercase}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:12.5px}
+.status{font-size:12px;color:var(--muted);display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center}
+.status b{color:var(--ink);font-weight:600}
+.prog{display:inline-block;width:80px;height:6px;border-radius:3px;background:var(--line);overflow:hidden;vertical-align:middle}
+.prog i{display:block;height:100%;background:var(--pitch)}
+.tabs{display:flex;gap:4px;overflow-x:auto;margin-top:12px}
+.tabs a{padding:9px 14px;text-decoration:none;color:var(--muted);font-weight:600;border-bottom:3px solid transparent;white-space:nowrap}
+.tabs a[aria-current="page"]{color:var(--ink);border-color:var(--pitch)}
+.view{padding-block:22px 48px}
+
+/* Analyse */
+.layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:24px}
+@media (max-width:880px){.layout{grid-template-columns:minmax(0,1fr)}}
+.builder{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.fld{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fld label{font-size:12px;color:var(--muted)}
+.fx-list{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.fx-list li button{width:100%;text-align:left;display:flex;flex-direction:column;gap:2px;padding:10px 12px;background:transparent;border-color:transparent}
+.fx-list li button[aria-current="true"]{background:var(--surface);border-color:var(--line);box-shadow:inset 3px 0 0 var(--pitch)}
+.fx-list .t{font-weight:600}
+.fx-list .s{font-size:12px;color:var(--muted)}
+@media (max-width:880px){.fx-list{flex-direction:row;overflow-x:auto;padding-bottom:4px}.fx-list li{flex:0 0 230px}}
+
+.match-head{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.fixture{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:14px}
+.team{font-family:var(--f-display);font-size:clamp(22px,4vw,34px);text-transform:uppercase;line-height:1;overflow-wrap:anywhere}
+.team.away{text-align:right}
+.team small{display:block;font-family:var(--f-body);font-size:11px;letter-spacing:.1em;color:var(--muted);margin-bottom:4px;font-weight:600}
+.xg{text-align:center}
+.xg .score{font-family:var(--f-num);font-size:20px;padding:6px 12px;border-radius:6px;background:var(--pitch-soft);color:var(--pitch);white-space:nowrap}
+.xg small{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 16px;color:var(--muted);font-size:12.5px}
+.meta b{color:var(--ink);font-weight:600}
+.real{font-size:12.5px;background:var(--pitch-soft);border-radius:6px;padding:8px 10px}
+.warn{font-size:12.5px;background:var(--yellow-soft);border-radius:6px;padding:8px 10px}
+.head-actions{display:flex;gap:8px;flex-wrap:wrap}
+.head-actions button{font-size:12.5px;padding:6px 10px}
+
+.panels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}
+@media (max-width:1120px){.panels{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.panel>header{display:flex;align-items:center;gap:10px}
+.panel h3{margin:0;font-family:var(--f-display);font-size:22px;text-transform:uppercase;letter-spacing:.02em;flex:1}
+.panel .exp{font-size:12px;color:var(--muted);text-align:right}
+.panel .exp b{display:block;font-family:var(--f-num);font-size:20px;color:var(--ink);font-weight:500}
+.mk{flex:none}
+.mk-card{width:18px;height:24px;border-radius:2px;background:var(--yellow);transform:rotate(-8deg)}
+.mk-corner{width:4px;height:26px;background:var(--muted);border-radius:1px;position:relative;margin-right:14px}
+.mk-corner::after{content:"";position:absolute;left:4px;top:0;border-left:14px solid var(--red);border-top:5px solid transparent;border-bottom:5px solid transparent}
+.mk-half{font-family:var(--f-display);font-size:15px;padding:2px 6px;border-radius:4px;background:var(--pitch);color:var(--surface)}
+.verdict{border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.p-y .verdict{background:var(--yellow-soft)} .p-c .verdict{background:var(--red-soft)} .p-g2 .verdict{background:var(--pitch-soft)}
+.verdict small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.verdict .v-l{font-weight:600}
+.verdict .v-p{font-family:var(--f-num);font-size:22px;white-space:nowrap}
+.verdict .v-h{font-size:12px;color:var(--muted);margin-top:4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hist{width:100%;height:auto;display:block}
+.hist text{fill:var(--muted);font-family:var(--f-num);font-size:8px}
+.sub{font-size:12px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:4px 6px;border-bottom:1px solid var(--line)}
+td{padding:6px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.line{font-family:var(--f-num);white-space:nowrap}
+.pc{position:relative;padding:4px 6px;border-radius:4px;font-family:var(--f-num);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden}
+.pc i{position:absolute;inset:0 auto 0 0;background:var(--bar);opacity:.55;border-radius:4px}
+.pc span,.pc em{position:relative}
+.pc em{font-style:normal;color:var(--muted);font-size:11px;margin-left:6px}
+.pc.hot i{background:var(--pitch);opacity:.25}
+.extras{display:flex;flex-direction:column;gap:6px}
+.extra{display:flex;justify-content:space-between;gap:10px;font-size:13px;align-items:center}
+.extra .pc{min-width:112px;text-align:right}
+.chip{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;padding:2px 7px;border-radius:999px;white-space:nowrap}
+.c-h{background:var(--pitch-soft);color:var(--pitch)} .c-m{background:var(--yellow-soft);color:var(--ink)} .c-f{background:var(--red-soft);color:var(--red)}
+.value{border-top:1px dashed var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.value .vrow{display:grid;grid-template-columns:minmax(0,1fr) 90px;gap:8px}
+.group-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--pitch);font-weight:600}
+.vres{font-size:12.5px;color:var(--muted);min-height:1.5em}
+.pos{color:var(--pitch)} .neg{color:var(--red)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.tbl-wrap{overflow-x:auto}
+.tbl-wrap table{min-width:640px}
+.tbl-wrap td,.tbl-wrap th{padding:9px 12px}
+.profile{margin-top:16px;padding:16px}
+.profile td.v{font-family:var(--f-num);text-align:right;white-space:nowrap}
+.profile th.r{text-align:right}
+.form-seq{font-family:var(--f-num);font-size:12px;letter-spacing:.02em;white-space:nowrap}
+
+/* Sélections & validation */
+.bar-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.bar-head label{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+.bar-head output{font-family:var(--f-num);color:var(--ink);min-width:44px}
+.mkt-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:2px;display:inline-block}
+.empty{padding:18px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-bottom:18px}
+.tile{padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.tile h3{margin:0;font-family:var(--f-display);font-size:20px;text-transform:uppercase}
+.tile .big{font-family:var(--f-num);font-size:24px}
+.tile .row{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);gap:8px}
+.tile .row b{color:var(--ink);font-family:var(--f-num);font-weight:500}
+.calib-wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;margin-top:18px}
+@media (max-width:880px){.calib-wrap{grid-template-columns:minmax(0,1fr)}}
+.calib{padding:16px}
+.calib svg{width:100%;height:auto;display:block;max-width:460px}
+.calib svg text{fill:var(--muted);font-family:var(--f-num);font-size:10px}
+.seg{display:flex;gap:4px;flex-wrap:wrap}
+.seg button{font-size:12.5px;padding:5px 10px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.prose p{margin:0 0 10px;color:var(--muted);max-width:64ch}
+.prose b{color:var(--ink)}
+
+/* Données */
+.data-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px}
+@media (max-width:880px){.data-grid{grid-template-columns:minmax(0,1fr)}}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:22px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;background:var(--surface)}
+.drop.over{border-color:var(--pitch);background:var(--pitch-soft)}
+.drop input{display:none}
+.drop label.btn{cursor:pointer;background:var(--pitch);color:var(--surface);padding:8px 14px;border-radius:6px;font-weight:600}
+.msg{font-size:12.5px;padding:8px 10px;border-radius:6px;margin-top:10px}
+.msg.ok{background:var(--pitch-soft)} .msg.err{background:var(--red-soft);color:var(--red)}
+.ds-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.ds-list li{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}
+.ds-list li:last-child{border-bottom:none}
+.settings{padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.check{display:flex;gap:8px;align-items:center;font-size:13px}
+#catalog table{min-width:0}
+.cat .sz{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.cat td{padding:6px 4px}
+.cat .cty{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;padding-top:12px}
+.cat a.dl{display:inline-block;font-family:var(--f-num);font-size:12px;padding:3px 8px;border:1px solid var(--line);border-radius:5px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.cat a.dl:hover{border-color:var(--pitch)}
+.cat a.dl.have{background:var(--pitch-soft);border-color:transparent;color:var(--pitch)}
+.auto-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px 12px}
+@media (min-width:881px){.fx-list{max-height:62vh;overflow-y:auto}}
+.odds-in summary{cursor:pointer;font-size:12.5px;color:var(--pitch);font-weight:600}
+.odds-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.odds-grid input{padding:6px 4px;text-align:center}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px}
+.combo{padding:12px 16px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;border-color:var(--pitch)}
+.combo .big{font-family:var(--f-num);font-size:20px}
+.combo input{width:110px}
+.pick-cb{width:18px;height:18px;accent-color:var(--pitch)}
+button.small{font-size:12px;padding:4px 9px}
+.st{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.st-w{background:var(--pitch-soft);color:var(--pitch)} .st-l{background:var(--red-soft);color:var(--red)} .st-p{background:var(--paper);color:var(--muted);border:1px solid var(--line)}
+code{font-family:var(--f-num);font-size:12px;background:var(--paper);padding:1px 5px;border-radius:4px;border:1px solid var(--line)}
+.disclaimer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;margin-top:24px;max-width:90ch}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-in">
+      <div class="brand"><span class="logo" aria-hidden="true"></span>
+        <div><h1>Matchlab</h1><p>Cartons · Corners · Buts en 2ᵉ mi-temps — modèle statistique sur données historiques</p></div>
+      </div>
+      <div class="status" id="status"></div>
+    </div>
+    <nav class="tabs" aria-label="Sections">
+      <a href="#analyse" data-v="analyse">Analyse</a>
+      <a href="#selections" data-v="selections">Sélections fortes</a>
+      <a href="#validation" data-v="validation">Validation du modèle</a>
+      <a href="#suivi" data-v="suivi">Suivi</a>
+      <a href="#donnees" data-v="donnees">Données</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="view" id="v-analyse">
+    <div class="layout">
+      <aside style="min-width:0">
+        <p class="eyebrow">Nouvelle rencontre</p>
+        <div class="builder">
+          <div class="fld"><label for="b-div">Championnat</label><select id="b-div"></select></div>
+          <div class="fld"><label for="b-h">Domicile</label><select id="b-h"></select></div>
+          <div class="fld"><label for="b-a">Extérieur</label><select id="b-a"></select></div>
+          <div class="fld"><label for="b-ref">Arbitre</label><select id="b-ref"></select></div>
+          <div class="fld"><label for="b-ctx">Contexte</label><select id="b-ctx"></select></div>
+          <div class="fld"><label for="b-date">Date du match</label><input type="date" id="b-date"></div>
+          <details class="odds-in"><summary>Cotes du bookmaker (facultatif)</summary>
+            <p class="sub" style="margin:6px 0">Les cotes 1-N-2 et ±2,5 buts résument ce que le marché sait du match (forme, absences). Le modèle s’en sert pour affiner ses prévisions.</p>
+            <div class="odds-grid">
+              <div class="fld"><label for="b-o1">1</label><input type="number" inputmode="decimal" step="0.01" min="1.01" id="b-o1"></div>
+              <div class="fld"><label for="b-oN">N</label><input type="number" inputmode="decimal" step="0.01" min="1.01" id="b-oN"></div>
+              <div class="fld"><label for="b-o2">2</label><input type="number" inputmode="decimal" step="0.01" min="1.01" id="b-o2"></div>
+              <div class="fld"><label for="b-oo">+2,5</label><input type="number" inputmode="decimal" step="0.01" min="1.01" id="b-oo"></div>
+              <div class="fld"><label for="b-ou">−2,5</label><input type="number" inputmode="decimal" step="0.01" min="1.01" id="b-ou"></div>
+            </div>
+          </details>
+          <button class="primary" type="button" id="b-add">Analyser ce match</button>
+          <div class="sub" id="b-msg"></div>
+        </div>
+        <p class="eyebrow" style="margin-top:18px">Mes rencontres</p>
+        <ul class="fx-list" id="fx-list"></ul>
+      </aside>
+      <div style="min-width:0" id="analysis"></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-selections" hidden>
+    <div class="bar-head">
+      <div><h2 class="sec">Sélections fortes</h2><div class="sub">Pour chaque rencontre, la ligne la plus ambitieuse au-dessus du seuil, avec son taux de réussite mesuré sur l’historique.</div></div>
+      <label for="thr">Seuil <input type="range" id="thr" min="60" max="90" step="1"><output id="thr-out"></output></label>
+    </div>
+    <div class="filters">
+      <div class="fld"><label for="f-period">Période</label><select id="f-period"><option value="1">Aujourd’hui et demain</option><option value="3">3 prochains jours</option><option value="7">7 prochains jours</option><option value="all">Toutes les rencontres</option></select></div>
+      <div class="fld"><label for="f-div">Championnat</label><select id="f-div"></select></div>
+      <div class="fld"><label for="f-mkt">Marché</label><select id="f-mkt"><option value="">Tous</option><option value="y">Cartons</option><option value="c">Corners</option><option value="g2">Buts 2ᵉ MT</option></select></div>
+      <div class="fld"><label for="f-conf">Confiance minimale</label><select id="f-conf"><option value="f">Toutes</option><option value="m">Moyenne ou élevée</option><option value="h">Élevée seulement</option></select></div>
+    </div>
+    <div id="combo"></div>
+    <div class="card tbl-wrap" id="picks"></div>
+  </section>
+
+  <section class="view" id="v-validation" hidden>
+    <div class="bar-head"><div><h2 class="sec">Validation du modèle</h2><div class="sub">Chaque match de la base est prédit avec les seules données disponibles avant son coup d’envoi, puis comparé au résultat réel.</div></div></div>
+    <div id="validation"></div>
+  </section>
+
+  <section class="view" id="v-suivi" hidden>
+    <div class="bar-head"><div><h2 class="sec">Suivi de mes paris</h2><div class="sub">Les paris suivis sont réglés automatiquement dès que les résultats arrivent avec la mise à jour des données.</div></div></div>
+    <div id="suivi"></div>
+  </section>
+
+  <section class="view" id="v-donnees" hidden>
+    <div class="bar-head"><div><h2 class="sec">Données</h2><div class="sub">Plus la base est grande (plusieurs saisons, plusieurs championnats), plus les estimations sont stables.</div></div></div>
+    <div class="data-grid">
+      <div style="min-width:0;display:flex;flex-direction:column;gap:16px">
+        <div class="card" id="auto" style="padding:16px"></div>
+        <div class="drop" id="drop">
+          <strong>Déposez vos fichiers CSV ici</strong>
+          <span class="sub">Une saison par fichier, plusieurs fichiers acceptés</span>
+          <label class="btn" for="file">Choisir des fichiers</label>
+          <input type="file" id="file" accept=".csv,text/csv" multiple>
+        </div>
+        <details class="card" style="padding:12px 16px">
+          <summary style="cursor:pointer;font-weight:600">Coller le contenu d’un CSV</summary>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+            <textarea id="paste" rows="5" placeholder="Div,Date,HomeTeam,AwayTeam,FTHG,FTAG,HTHG,HTAG,HC,AC,HY,AY,…"></textarea>
+            <div style="display:flex;gap:8px"><input type="text" id="paste-div" placeholder="Code championnat (ex. F1)" style="max-width:220px"><button type="button" id="paste-go">Importer</button></div>
+          </div>
+        </details>
+        <div id="imp-msg"></div>
+        <div>
+          <p class="eyebrow">Bases chargées</p>
+          <div class="card"><ul class="ds-list" id="ds-list"></ul></div>
+        </div>
+        <div>
+          <p class="eyebrow">Réglages du modèle</p>
+          <div class="card settings">
+            <div class="fld"><label for="s-hl">Poids des matchs anciens (demi-vie)</label><select id="s-hl"><option value="90">90 jours</option><option value="180">180 jours</option><option value="365">1 an</option><option value="9999">Aucune décroissance</option></select></div>
+            <div class="fld"><label for="s-k">Régression vers la moyenne</label><select id="s-k"><option value="3">Faible (3 matchs)</option><option value="6">Moyenne (6 matchs)</option><option value="10">Forte (10 matchs)</option><option value="15">Très forte (15 matchs)</option></select></div>
+            <div class="fld"><label for="s-kr">Prudence sur l’arbitre</label><select id="s-kr"><option value="4">Faible</option><option value="8">Moyenne</option><option value="15">Forte</option></select></div>
+            <div class="fld"><label for="s-mkt">Utiliser les cotes du marché</label><select id="s-mkt"><option value="1">Oui (recommandé)</option><option value="0">Non</option></select></div>
+            <div class="fld"><label for="s-n">Simulations Monte Carlo</label><select id="s-n"><option value="10000">10 000</option><option value="20000">20 000</option><option value="50000">50 000</option></select></div>
+          </div>
+        </div>
+      </div>
+      <div style="min-width:0;display:flex;flex-direction:column;gap:16px">
+      <div class="card" style="padding:16px">
+        <p class="eyebrow">Catalogue : tous les championnats</p>
+        <p class="sub" style="margin:0 0 10px">Cliquez sur chaque saison pour télécharger son fichier, puis déposez tous les fichiers ensemble dans la zone de gauche. Trois saisons par championnat donnent les meilleures estimations.</p>
+        <div class="tbl-wrap" id="catalog"></div>
+      </div>
+      <div class="card prose" style="padding:16px;min-width:0">
+        <p class="eyebrow">Où trouver les données</p>
+        <p><b>football-data.co.uk</b> publie gratuitement un CSV par saison et par championnat, avec les colonnes dont le modèle a besoin : score à la mi-temps, corners, cartons et arbitre. Ouvrez <a href="https://www.football-data.co.uk/data.php" target="_blank" rel="noopener">football-data.co.uk/data.php</a>, choisissez un pays, puis téléchargez la saison en cours et les deux précédentes.</p>
+        <p>Codes utiles : <code>F1</code> Ligue 1, <code>E0</code> Premier League, <code>SP1</code> LaLiga, <code>I1</code> Serie A, <code>D1</code> Bundesliga, <code>N1</code> Eredivisie, <code>P1</code> Portugal, <code>B1</code> Belgique.</p>
+        <p>Tout autre CSV fonctionne s’il contient les colonnes <code>Date</code>, <code>HomeTeam</code>, <code>AwayTeam</code>, <code>FTHG</code>, <code>FTAG</code>, <code>HTHG</code>, <code>HTAG</code>, <code>HC</code>, <code>AC</code>, <code>HY</code>, <code>AY</code>. <code>HR</code>, <code>AR</code> et <code>Referee</code> sont facultatives mais améliorent le modèle des cartons.</p>
+        <p class="eyebrow" style="margin-top:16px">Ce que fait le moteur</p>
+        <p><b>Notes attaque et défense.</b> Pour chaque équipe et chaque statistique (buts 1ʳᵉ MT, buts 2ᵉ MT, corners, cartons), le modèle estime ce qu’elle produit et concède par rapport à la moyenne de la ligue, en tenant compte de la force des adversaires rencontrés et de l’avantage du terrain.</p>
+        <p><b>Estimation bayésienne.</b> Chaque note part de la moyenne de la ligue et s’en éloigne à mesure que les matchs s’accumulent. Les matchs récents pèsent plus lourd que les anciens.</p>
+        <p><b>Arbitre.</b> Sa sévérité est mesurée par rapport aux cartons attendus dans les matchs qu’il a dirigés, pas sur sa simple moyenne brute.</p>
+        <p><b>Lois calibrées.</b> La surdispersion des corners et des cartons est mesurée sur vos données. L’incertitude sur les notes des équipes est ajoutée à la variance : moins il y a de matchs, plus les probabilités se rapprochent de 50 %.</p>
+        <p><b>Monte Carlo.</b> Chaque rencontre est rejouée des dizaines de milliers de fois en tirant au hasard les notes plausibles des équipes, pour vérifier le calcul exact et donner une fourchette à 90 %.</p>
+        <p><b>Validation.</b> Le modèle est testé match après match sur votre historique, sans jamais regarder le futur. Le taux de réussite réel de chaque type de pari est affiché à côté des prédictions.</p>
+      </div>
+      </div>
+    </div>
+  </section>
+  <p class="disclaimer">Le modèle ignore les compositions, les blessures, la météo et l’actualité des clubs. Une probabilité de 75 % perd encore une fois sur quatre. Ne pariez que si la cote dépasse la cote juste, et seulement des sommes que vous pouvez perdre.</p>
+</main>
